@@ -1,2 +1,2 @@
-# Multimodal-Systems-Adv.-AI-project
+# Multimodal Systems & Advanced AI PROJECT
 T-pose / Lateral Raises counter
