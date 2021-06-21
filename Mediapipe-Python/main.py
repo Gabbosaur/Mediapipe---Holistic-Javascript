@@ -68,7 +68,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
 			landmarks = results.pose_landmarks.landmark
 
 			cv2.putText(image,"BODY FOUND",
-						(15,15),
+						(400,15),
 						cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA
 			)
 			# print(landmarks)
@@ -144,7 +144,7 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
 				cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA
 			)
 			tollerance = 20
-			if (angle_elbow_left >= (180 - tollerance) & angle_elbow_left <= (180 + tollerance) & angle_elbow_right >= (180 - tollerance) & angle_elbow_right <= (180 + tollerance) & angle_shoulder_left <= (90 + tollerance) & angle_shoulder_left >= (90 - tollerance) & angle_shoulder_right <= (90 + tollerance) & angle_shoulder_right >= (90 - tollerance)):
+			if (angle_elbow_left >= (180 - tollerance) and angle_elbow_left <= (180 + tollerance) and angle_elbow_right >= (180 - tollerance) and angle_elbow_right <= (180 + tollerance) and angle_shoulder_left <= (90 + tollerance) and angle_shoulder_left >= (90 - tollerance) and angle_shoulder_right <= (90 + tollerance) and angle_shoulder_right >= (90 - tollerance)):
 				cv2.putText(image,"T-Pose found",
 						(60,60),
 						cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA
@@ -152,9 +152,9 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
 				if (flag == 0):
 					rep_counter = rep_counter+1
 					flag = 1
-				else:
-					if (angle_shoulder_left < 20 & angle_shoulder_right < 20):
-						flag = 0
+			else:
+				if (angle_shoulder_left < 20 and angle_shoulder_right < 20):
+					flag = 0
 		except:
 			pass
 		
