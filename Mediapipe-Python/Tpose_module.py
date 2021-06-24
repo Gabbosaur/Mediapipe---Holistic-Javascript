@@ -7,10 +7,6 @@ import math
 #nostri moduli
 import math_module
 
-mp_drawing = mp.solutions.drawing_utils  # drawing utilities
-mp_pose = mp.solutions.pose  # pose estimation model di mediapipe
-
-
 """
 # VIDEO FEED
 cap = cv2.VideoCapture(0)
@@ -26,6 +22,10 @@ cv2.destroyAllWindows()
 
 
 def Tpose():
+
+	mp_drawing = mp.solutions.drawing_utils  # drawing utilities
+	mp_pose = mp.solutions.pose  # pose estimation model di mediapipe
+
 	rep_counter=0
 	flag=0
 
