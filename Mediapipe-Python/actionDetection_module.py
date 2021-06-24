@@ -79,7 +79,7 @@ def folderCreation():
 	no_sequences = 30
 
 
-	path=pathlib.Path(__file__).parent.resolve()
+	path=pathlib.Path(__file__).parent.resolve() #restituisce il path del progetto
 
 	finalPath=os.path.join(path,DATA_PATH)
 	print(finalPath)
