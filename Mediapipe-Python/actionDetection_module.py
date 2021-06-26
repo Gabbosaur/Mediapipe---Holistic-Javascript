@@ -5,6 +5,8 @@ import os
 import time
 import mediapipe as mp
 import pathlib
+import pickle
+
 
 #############Keypoints using MP Holistic
 
@@ -26,8 +28,14 @@ def draw_styled_landmarks(image, results):
                              mp_drawing.DrawingSpec(color=(0,255,0), thickness=2, circle_radius=2)
                              )
 
+def extract_keypoints(results):
+	pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(33*4)
+	return pose
+#######################
+'''
 cap = cv2.VideoCapture(0)
 # Set mediapipe model 
+list = []
 with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as iter_pose:
 	while cap.isOpened():
 
@@ -44,22 +52,35 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
 		# Show to screen
 		cv2.imshow('OpenCV Feed', image)
 
+		frame_pose=extract_keypoints(results)
+		list.append(frame_pose)
+
 		# Break gracefully
 		if cv2.waitKey(10) & 0xFF == ord('q'):
 			break
 	cap.release()
 	cv2.destroyAllWindows()
+#
+with open('mat.pkl', 'wb') as outfile:
+	pickle.dump(list, outfile, pickle.HIGHEST_PROTOCOL)
 
 
+with open('mat.pkl', 'rb') as infile:
+	result = pickle.load(infile)
+print("result:")
+print(result)
+print("list:")
+print(list)
+if list==result:
+	print("UGUALI")
+'''
 ##########extract keypoint values
 
-pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(132)
-
-def extract_keypoints(results):
-	pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(33*4)
-	return pose
+#pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(132)
 
 
+
+#print(pose)
 ##############setup folders
 '''
 alzateLaterali0 = braccia piegate
@@ -95,3 +116,69 @@ def folderCreation():
 
 #############5 collect keypoint values for train and test
 
+import cv2
+import mediapipe as mp
+import numpy as np
+import sys
+
+mp_drawing = mp.solutions.drawing_utils
+mp_pose = mp.solutions.pose
+
+pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
+
+PROJECT_PATH=pathlib.Path(__file__).parent.resolve() #restituisce il path del progetto
+VIDEO_PATH=os.path.join("data\\exercise\\alzateLaterali\\alzateLaterali0\\")
+FULL_VIDEO_PATH=os.path.join(PROJECT_PATH,VIDEO_PATH)#fino a cartella
+nome_video="0.mp4"
+
+videoP=os.path.join(FULL_VIDEO_PATH,nome_video)
+cap = cv2.VideoCapture(videoP)
+
+if cap.isOpened()== False:
+	print("Error opening video stream or file")
+	raise TypeError
+
+frame_width = int(cap.get(3))
+frame_height = int(cap.get(4))
+
+outdir=FULL_VIDEO_PATH
+
+inputflnm = nome_video
+
+inflnm, inflext = inputflnm.split('.')
+
+out_filename = f'{outdir}{inflnm}_annotated.{inflext}'
+out_filename_landmark = f'{outdir}{inflnm}_annotated.pkl'
+
+out = cv2.VideoWriter(out_filename, cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height))
+land_list=[]
+while cap.isOpened():
+	ret, image = cap.read()
+	if not ret:
+		break
+
+	image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+	image.flags.writeable = False
+	results = pose.process(image)
+
+	image.flags.writeable = True
+	image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+	mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+	out.write(image)
+
+	frame_pose=extract_keypoints(results)
+	land_list.append(frame_pose)
+
+with open(out_filename_landmark, 'wb') as outfile:
+	pickle.dump(land_list, outfile, pickle.HIGHEST_PROTOCOL)
+pose.close()
+cap.release()
+out.release()
+
+cont=0
+nomeFileLandmark=str(cont) + "_annotated.pkl"
+lettura_file_landmark=os.path.join(FULL_VIDEO_PATH,nomeFileLandmark)
+with open('mat.pkl', 'rb') as infile:
+	result = pickle.load(infile)
+
+print(result)
