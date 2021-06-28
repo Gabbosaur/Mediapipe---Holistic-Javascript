@@ -113,15 +113,3 @@ def folderCreation():
 				pass
 
 #############5 collect keypoint values for train and test
-
-
-
-'''
-cont=0
-nomeFileLandmark=str(cont) + "_annotated.pkl"
-lettura_file_landmark=os.path.join(dirOutputPKL,nomeFileLandmark)
-with open(lettura_file_landmark, 'rb') as infile:
-	result = pickle.load(infile)
-
-print(result)
-'''
