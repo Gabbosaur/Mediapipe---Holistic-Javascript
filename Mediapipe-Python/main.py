@@ -14,5 +14,9 @@ import math
 
 #nostri moduli
 import Tpose_module
+import createAnnotatedData_module
 
-Tpose_module.Tpose()
+#Tpose_module.Tpose()
+
+#crea i video e i file pkl annotati dai file mp4 presenti nelle sottocartelle di alzateLaterali
+createAnnotatedData_module.createAnnotation("alzateLaterali")
