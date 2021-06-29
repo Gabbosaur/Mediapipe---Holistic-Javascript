@@ -113,3 +113,14 @@ def folderCreation():
 				pass
 
 #############5 collect keypoint values for train and test
+
+
+
+
+
+# Actions that we try to detect
+#actions = np.array(['alzateLaterali0', 'alzateLaterali1', 'alzateLaterali2' , 'alzateLaterali3'])
+
+
+
+#print(label_map)

@@ -60,8 +60,9 @@ def createAnnotation(nomeCartella):
 				inflnm, inflext = filename.split('.')
 				out_filename = f'{dirOutputAnnotatedVideo}\{inflnm}_annotated.{inflext}'
 				out_filename_landmark = f'{dirOutputPKL}\{inflnm}_annotated.pkl'
-
-				out = cv2.VideoWriter(out_filename, cv2.VideoWriter_fourcc(*'mp4v'), 10, (frame_width,frame_height))
+				fps=cap.get(cv2.CAP_PROP_FPS)
+				print("fps:"+str(fps))
+				out = cv2.VideoWriter(out_filename, cv2.VideoWriter_fourcc(*'mp4v'), fps, (frame_width,frame_height))
 				land_list=[]
 				while cap.isOpened():
 					ret, image = cap.read()
@@ -94,14 +95,47 @@ def createAnnotation(nomeCartella):
 
 
 def readAnnotation(nomeCartella):
-	print("da fare")
 
-	'''
-	cont=0
-	nomeFileLandmark=str(cont) + "_annotated.pkl"
-	lettura_file_landmark=os.path.join(dirOutputPKL,nomeFileLandmark)
-	with open(lettura_file_landmark, 'rb') as infile:
-		result = pickle.load(infile)
+	sequences, labels = [], []
+	PROJECT_PATH=pathlib.Path(__file__).parent.resolve() #restituisce il path del progetto
 
-	print(result)
-	'''
+	ALL_ES_PATH=os.path.join("data\\exercise\\",nomeCartella)
+	SPEC_ES_PATH=os.path.join(PROJECT_PATH,ALL_ES_PATH)
+
+	list_subfolders_with_paths = [f.path for f in os.scandir(SPEC_ES_PATH) if f.is_dir()] #alzateLaterali0 , alzateLaterali1, alzateLaterali2 , alzateLaterali3
+	i=0
+	cartelle=[]
+	for path in list_subfolders_with_paths:
+		cartelle.append(os.path.basename(os.path.normpath(path)))
+	#action=np.array(list_subfolders_with_paths)
+	print(cartelle)
+	actions=np.array(cartelle)
+
+	label_map = {label:num for num, label in enumerate(actions)}
+	print(label_map)
+	for directory in list_subfolders_with_paths:
+		print(directory)
+		subfolders = [f.path for f in os.scandir(directory) if f.is_dir()] #annotated_PKL,annotated_VIDEO
+		for dir in subfolders:
+			print(dir)
+			cartella=os.path.basename(os.path.normpath(dir))
+			print(cartella)
+			if(cartella=="annotated_PKL"):
+				print("dentro annotated pkl")
+				for subdir, dirs, files in os.walk(dir):
+					for file in files:
+								print(file)
+						#for action in actions:
+							#for sequence in range(no_sequences):
+								fileDaAprire=os.path.join(dir,file)
+								with open(fileDaAprire, 'rb') as infile:
+									result = pickle.load(infile)
+
+								sequences.append(result)
+								labels.append(label_map[actions[i]])
+		i=i+1
+
+	#print(len(sequences[0]))
+	#print(labels)
+
+	return sequences,labels
