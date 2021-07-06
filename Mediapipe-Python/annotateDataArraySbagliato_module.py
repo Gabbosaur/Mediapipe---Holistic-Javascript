@@ -101,10 +101,9 @@ def createAnnotation(nomeCartella):
 def readAnnotation(nomeCartella):
 
 	#sequences, labels = [], []
-	sequences=[]
-	#sequences= np.array([0 for i in range(132)])
+	sequences= np.array([0 for i in range(132)])
 	#sequences= np.zeros((1,1,132))
-	#print(sequences)
+	print(sequences)
 	#labels = np.array([])
 	labels = []
 	PROJECT_PATH=pathlib.Path(__file__).parent.resolve() #restituisce il path del progetto
@@ -145,9 +144,9 @@ def readAnnotation(nomeCartella):
 						with open(fileDaAprire, 'rb') as infile:
 							result = pickle.load(infile)
 
-						sequences.append(result)
+						#sequences.append(result)
 						print(result)
-						#sequences=np.vstack((sequences,result))
+						sequences=np.vstack((sequences,result))
 
 						#labels=np.append(labels,label_map[actions[i]])
 						labels.append(label_map[actions[i]])
@@ -155,6 +154,6 @@ def readAnnotation(nomeCartella):
 
 	#print(len(sequences[0]))
 	#print(labels)
-	#sequences=np.delete(sequences,0,axis=0)
+	sequences=np.delete(sequences,0,axis=0)
 
 	return sequences,labels,actions
