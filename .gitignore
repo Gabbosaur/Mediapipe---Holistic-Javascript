@@ -1,3 +1,8 @@
 /tesivenv
 .vscode
 /Mediapipe-Python/data
+Logs/train/events.out.tfevents.1625237786.LUCA-PC.30088.835.v2
+Logs/train/events.out.tfevents.1625237827.LUCA-PC.22788.898.v2
+Logs/train/events.out.tfevents.1625237927.LUCA-PC.27952.868.v2
+Logs/train/events.out.tfevents.1625237870.LUCA-PC.9056.889.v2
+Mediapipe-Python/__pycache__

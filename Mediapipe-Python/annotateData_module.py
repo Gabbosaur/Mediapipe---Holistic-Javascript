@@ -146,7 +146,7 @@ def readAnnotation(nomeCartella):
 							result = pickle.load(infile)
 
 						sequences.append(result)
-						print(result)
+						#print(result)
 						#sequences=np.vstack((sequences,result))
 
 						#labels=np.append(labels,label_map[actions[i]])
