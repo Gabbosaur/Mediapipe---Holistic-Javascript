@@ -94,10 +94,11 @@ def trainNostro(X,y,actions):
 
 class MyBatchGenerator(Sequence):
 	'Generates data for Keras'
-	def __init__(self, X, y, batch_size=1, shuffle=True):
+	def __init__(self, X, y, batch_size=1, to_fit=True, shuffle=True):
 		'Initialization'
 		self.X = X
 		self.y = y
+		self.to_fit = to_fit
 		self.batch_size = batch_size
 		self.shuffle = shuffle
 		self.on_epoch_end()
@@ -122,13 +123,38 @@ class MyBatchGenerator(Sequence):
 		for s in range(0, self.batch_size):
 			Xb[s] = self.X[index]
 			yb[s] = self.y[index]
-		return Xb, yb
+		if self.to_fit:
+			return Xb, yb
+		else:
+			return Xb
 
+	def _generate_X(self, index):
+		'Generates data containing batch_size images'
+		# Initialization
+		Xb = np.empty((self.batch_size, *self.X[index].shape))
+		for s in range(0, self.batch_size):
+			Xb[s] = self.X[index]
+		return Xb
 
+	def _generate_y(self, index):
+		'Generates data containing batch_size images'
+		# Initialization
+		yb = np.empty((self.batch_size, *self.y[index].shape))
+		for s in range(0, self.batch_size):
+			yb[s] = self.y[index]
+		return yb
+
+import pickle
 
 def train(X,y,actions):
+	#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05)
 	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05)
 
+	with open("x_test_out", 'wb') as outfile:
+		pickle.dump(np.array(X_test), outfile, pickle.HIGHEST_PROTOCOL)
+
+	with open("y_test_out", 'wb') as outfile:
+		pickle.dump(np.array(y_test), outfile, pickle.HIGHEST_PROTOCOL)
 	#x_train_tensor = tf.convert_to_tensor(X_train,dtype=float)
 	#print("primo video del train")
 	#print(X_train[0])
@@ -154,10 +180,24 @@ def train(X,y,actions):
 
 	model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
 	print(model.summary())
-	model.fit_generator(MyBatchGenerator(X_train, y_train, batch_size=1), epochs=1000, callbacks=[tb_callback])
+	model.fit_generator(MyBatchGenerator(X_train, y_train, batch_size=1, to_fit=True), epochs=200, callbacks=[tb_callback])
 
 	print(model.summary())
 
 	model.save('action.h5')
 	return model,X_train, X_test, y_train, y_test
+
+
+
+def test(X_test,y_test,model,actions):
+	#prediction
+	res = model.predict(MyBatchGenerator(X_test, y_test, batch_size=1, to_fit=False))
+
+	#print(res)
+	print("\nPREDICTIONS\n")
+	for i in range(0,len(res)):
+		print("valore predetto per campione "+ str(i)+ ": "+str(actions[np.argmax(res[i])])) #prediction
+
+		print("valore effettivo per campione "+ str(i)+ ": "+str(actions[np.argmax(y_test[i])])+"\n") #valore effettivo
+
 

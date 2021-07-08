@@ -37,7 +37,7 @@ print(np.array(sequences[2]).shape) #(numero di frame(=numero di rilevazioni di 
 labels=np.array(labels)
 print(labels)
 print(type(labels))
-print(len(labels))
+print("numero labels: "+str(len(labels)))
 
 
 
@@ -48,29 +48,31 @@ print(X.shape)
 
 y = to_categorical(labels).astype(int)
 
-model,X_train, X_test, y_train, y_test=train_module.train(X,y,actions)
+#model,X_train, X_test, y_train, y_test=train_module.train(X,y,actions)
 
 ###############################sotto commentato
-'''
-	model = Sequential()
-	model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(None,132)))
-	model.add(LSTM(128, return_sequences=True, activation='relu'))
-	model.add(LSTM(64, return_sequences=False, activation='relu'))
-	model.add(Dense(64, activation='relu'))
-	model.add(Dense(32, activation='relu'))
-	model.add(Dense(actions.shape[0], activation='softmax'))
 
-	model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
+model = Sequential()
+model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(None,132)))
+model.add(LSTM(128, return_sequences=True, activation='relu'))
+model.add(LSTM(64, return_sequences=False, activation='relu'))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(actions.shape[0], activation='softmax'))
 
-	#model.load_weights('action.h5')   #carica modello
-'''
+model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
+
+model.load_weights('action.h5')   #carica modello
+
+import pickle
+
+with open("x_test_out", 'rb') as infile:
+	X_test = pickle.load(infile)
+
+with open("y_test_out", 'rb') as infile:
+	y_test = pickle.load(infile)
 #####################fine commento
 
 #prediction
-res = model.predict_generator(train_module.test_generator(X_test))
-
-print(actions[np.argmax(res[4])]) #prediction
-
-print(actions[np.argmax(y_test[4])]) #valore effettivo
-
+train_module.test(X_test,y_test,model,actions)
 

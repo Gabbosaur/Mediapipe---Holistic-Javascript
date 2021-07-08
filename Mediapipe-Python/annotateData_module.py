@@ -29,7 +29,7 @@ def createAnnotation(nomeCartella):
 	for directory in list_subfolders_with_paths:
 		#cancella le 2 righe sotto al commento
 		cartella=os.path.basename(os.path.normpath(directory))
-		if cartella=="alzateLaterali1" or cartella=="alzateLaterali2" or cartella=="alzateLaterali3":
+		if cartella=="noAlzateLaterali":
 			#directory=FULL_VIDEO_PATH
 			print("sto processando i video in: "+ directory )
 			for file in os.listdir(directory):
@@ -126,32 +126,32 @@ def readAnnotation(nomeCartella):
 	for directory in list_subfolders_with_paths:
 		print(directory)
 		#cancella 2 righe sotto
-		#cartella_main=os.path.basename(os.path.normpath(directory))
-		#if cartella_main=="alzateLaterali1" or cartella_main=="alzateLaterali2" or cartella_main=="alzateLaterali3":
-		print("dentro main")
-		subfolders = [f.path for f in os.scandir(directory) if f.is_dir()] #annotated_PKL,annotated_VIDEO
-		for dir in subfolders:
-			print(dir)
-			cartella=os.path.basename(os.path.normpath(dir))
-			print(cartella)
-			if(cartella=="annotated_PKL"):
-				print("dentro annotated pkl")
-				for subdir, dirs, files in os.walk(dir):
-					for file in files:
-						print(file)
-						#for action in actions:
-							#for sequence in range(no_sequences):
-						fileDaAprire=os.path.join(dir,file)
-						with open(fileDaAprire, 'rb') as infile:
-							result = pickle.load(infile)
+		cartella_main=os.path.basename(os.path.normpath(directory))
+		if cartella_main=="alzateLaterali0" or cartella_main=="noAlzateLaterali":
+			print("dentro main")
+			subfolders = [f.path for f in os.scandir(directory) if f.is_dir()] #annotated_PKL,annotated_VIDEO
+			for dir in subfolders:
+				print(dir)
+				cartella=os.path.basename(os.path.normpath(dir))
+				print(cartella)
+				if(cartella=="annotated_PKL"):
+					print("dentro annotated pkl")
+					for subdir, dirs, files in os.walk(dir):
+						for file in files:
+							print(file)
+							#for action in actions:
+								#for sequence in range(no_sequences):
+							fileDaAprire=os.path.join(dir,file)
+							with open(fileDaAprire, 'rb') as infile:
+								result = pickle.load(infile)
 
-						sequences.append(result)
-						#print(result)
-						#sequences=np.vstack((sequences,result))
+							sequences.append(result)
+							print(result.shape)
+							#sequences=np.vstack((sequences,result))
 
-						#labels=np.append(labels,label_map[actions[i]])
-						labels.append(label_map[actions[i]])
-		i=i+1
+							#labels=np.append(labels,label_map[actions[i]])
+							labels.append(label_map[actions[i]])
+			i=i+1
 
 	#print(len(sequences[0]))
 	#print(labels)
