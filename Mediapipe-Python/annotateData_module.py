@@ -28,70 +28,70 @@ def createAnnotation(nomeCartella):
 
 	for directory in list_subfolders_with_paths:
 		#cancella le 2 righe sotto al commento
-		cartella=os.path.basename(os.path.normpath(directory))
-		if cartella=="noAlzateLaterali":
+		#cartella=os.path.basename(os.path.normpath(directory))
+		#if cartella=="noAlzateLaterali":
 			#directory=FULL_VIDEO_PATH
-			print("sto processando i video in: "+ directory )
-			for file in os.listdir(directory):
-				filename = os.fsdecode(file)
+		print("sto processando i video in: "+ directory )
+		for file in os.listdir(directory):
+			filename = os.fsdecode(file)
 
-				if filename.endswith(".mp4"):
-					# print(os.path.join(directory, filename))
-					#nome_video=filename
-					videoP=os.path.join(directory,filename)
-					cap = cv2.VideoCapture(videoP)
+			if filename.endswith(".mp4"):
+				# print(os.path.join(directory, filename))
+				#nome_video=filename
+				videoP=os.path.join(directory,filename)
+				cap = cv2.VideoCapture(videoP)
 
-					if cap.isOpened()== False:
-						print("Error opening video stream or file")
-						raise TypeError
+				if cap.isOpened()== False:
+					print("Error opening video stream or file")
+					raise TypeError
 
-					frame_width = int(cap.get(3))
-					frame_height = int(cap.get(4))
+				frame_width = int(cap.get(3))
+				frame_height = int(cap.get(4))
 
-					outVideo=directory
-					dirOutputPKL=os.path.join(outVideo,"annotated_PKL")
-					dirOutputAnnotatedVideo=os.path.join(outVideo,"annotated_VIDEO")
-
-
-					try:
-						os.makedirs(dirOutputPKL)
-						os.makedirs(dirOutputAnnotatedVideo)
-					except:
-						#print("cartelle per video e pkl annotated già presenti")
-						pass
-
-					#inputflnm = filename
-					inflnm, inflext = filename.split('.')
-					out_filename = f'{dirOutputAnnotatedVideo}\{inflnm}_annotated.{inflext}'
-					out_filename_landmark = f'{dirOutputPKL}\{inflnm}_annotated.pkl'
-					fps=cap.get(cv2.CAP_PROP_FPS)
-					print("fps:"+str(fps))
-					out = cv2.VideoWriter(out_filename, cv2.VideoWriter_fourcc(*'mp4v'), fps, (frame_width,frame_height))
-					land_list=[]
-					while cap.isOpened():
-						ret, image = cap.read()
-						if not ret:
-							break
-
-						image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-						image.flags.writeable = False
-						results = pose.process(image)
-
-						image.flags.writeable = True
-						image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-						mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
-						out.write(image)
-
-						frame_pose=__extract_keypoints(results)
-						land_list.append(frame_pose)
-
-					with open(out_filename_landmark, 'wb') as outfile:
-						pickle.dump(np.array(land_list), outfile, pickle.HIGHEST_PROTOCOL)
+				outVideo=directory
+				dirOutputPKL=os.path.join(outVideo,"annotated_PKL")
+				dirOutputAnnotatedVideo=os.path.join(outVideo,"annotated_VIDEO")
 
 
-				else:
-					print("file non mp4")
+				try:
+					os.makedirs(dirOutputPKL)
+					os.makedirs(dirOutputAnnotatedVideo)
+				except:
+					#print("cartelle per video e pkl annotated già presenti")
+					pass
 
+				#inputflnm = filename
+				inflnm, inflext = filename.split('.')
+				out_filename = f'{dirOutputAnnotatedVideo}\{inflnm}_annotated.{inflext}'
+				out_filename_landmark = f'{dirOutputPKL}\{inflnm}_annotated.pkl'
+				fps=cap.get(cv2.CAP_PROP_FPS)
+				print("fps:"+str(fps))
+				out = cv2.VideoWriter(out_filename, cv2.VideoWriter_fourcc(*'mp4v'), fps, (frame_width,frame_height))
+				land_list=[]
+				while cap.isOpened():
+					ret, image = cap.read()
+					if not ret:
+						break
+
+					image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+					image.flags.writeable = False
+					results = pose.process(image)
+
+					image.flags.writeable = True
+					image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+					mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+					out.write(image)
+
+					frame_pose=__extract_keypoints(results)
+					land_list.append(frame_pose)
+
+				with open(out_filename_landmark, 'wb') as outfile:
+					pickle.dump(np.array(land_list), outfile, pickle.HIGHEST_PROTOCOL)
+				
+
+			else:
+				print("file non mp4")
+		
 
 	pose.close()
 	cap.release()
@@ -126,32 +126,32 @@ def readAnnotation(nomeCartella):
 	for directory in list_subfolders_with_paths:
 		print(directory)
 		#cancella 2 righe sotto
-		cartella_main=os.path.basename(os.path.normpath(directory))
-		if cartella_main=="alzateLaterali0" or cartella_main=="noAlzateLaterali":
-			print("dentro main")
-			subfolders = [f.path for f in os.scandir(directory) if f.is_dir()] #annotated_PKL,annotated_VIDEO
-			for dir in subfolders:
-				print(dir)
-				cartella=os.path.basename(os.path.normpath(dir))
-				print(cartella)
-				if(cartella=="annotated_PKL"):
-					print("dentro annotated pkl")
-					for subdir, dirs, files in os.walk(dir):
-						for file in files:
-							print(file)
-							#for action in actions:
-								#for sequence in range(no_sequences):
-							fileDaAprire=os.path.join(dir,file)
-							with open(fileDaAprire, 'rb') as infile:
-								result = pickle.load(infile)
+		#cartella_main=os.path.basename(os.path.normpath(directory))
+		#if cartella_main=="alzateLaterali0" or cartella_main=="noAlzateLaterali":
+		print("dentro main")
+		subfolders = [f.path for f in os.scandir(directory) if f.is_dir()] #annotated_PKL,annotated_VIDEO
+		for dir in subfolders:
+			print(dir)
+			cartella=os.path.basename(os.path.normpath(dir))
+			print(cartella)
+			if(cartella=="annotated_PKL"):
+				print("dentro annotated pkl")
+				for subdir, dirs, files in os.walk(dir):
+					for file in files:
+						print(file)
+						#for action in actions:
+							#for sequence in range(no_sequences):
+						fileDaAprire=os.path.join(dir,file)
+						with open(fileDaAprire, 'rb') as infile:
+							result = pickle.load(infile)
 
-							sequences.append(result)
-							print(result.shape)
-							#sequences=np.vstack((sequences,result))
+						sequences.append(result)
+						print(result.shape)
+						#sequences=np.vstack((sequences,result))
 
-							#labels=np.append(labels,label_map[actions[i]])
-							labels.append(label_map[actions[i]])
-			i=i+1
+						#labels=np.append(labels,label_map[actions[i]])
+						labels.append(label_map[actions[i]])
+		i=i+1
 
 	#print(len(sequences[0]))
 	#print(labels)

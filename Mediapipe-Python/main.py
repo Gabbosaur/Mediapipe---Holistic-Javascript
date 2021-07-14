@@ -24,10 +24,12 @@ from tensorflow.keras.callbacks import TensorBoard
 import Tpose_module
 import annotateData_module
 import train_module
+import math_module
 
 #Tpose_module.Tpose()
 
 #crea i video e i file pkl annotati dai file mp4 presenti nelle sottocartelle di alzateLaterali
+
 #annotateData_module.createAnnotation("alzateLaterali")
 sequences,labels,actions=annotateData_module.readAnnotation("alzateLaterali")
 
@@ -48,6 +50,7 @@ print(X.shape)
 
 y = to_categorical(labels).astype(int)
 
+'''
 #model,X_train, X_test, y_train, y_test=train_module.train(X,y,actions)
 
 ###############################sotto commentato
@@ -75,4 +78,7 @@ with open("y_test_out", 'rb') as infile:
 
 #prediction
 train_module.test(X_test,y_test,model,actions)
+
+'''
+math_module.calculate_feature_alzateLaterali(X)
 
