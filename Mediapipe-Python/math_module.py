@@ -123,23 +123,56 @@ def braccia_tese(x):
 
 	return min(coeff_destra,coeff_sinistra)
 
+
+
 def mov_braccia_simmetrico(x):
+	distanzaX=0
+	distanzaY=0
+	for i in range(len(x)):
+		com_x=max(x[i][48],x[i][44]) - min((x[i][48],x[i][44])) #x del centro di massa
+		#dist_X=abs(x[i][64]-x[i][60])
+
+		dist_X=abs(abs(x[i][64]-com_x)-abs(x[i][60]-com_x))
+		dist_Y=abs(x[i][65]-x[i][61])
+
+		distanzaX=distanzaX+dist_X
+		print("d:"+str(distanzaX))
+		distanzaY=distanzaY+dist_Y
+	print("distanza su asse x:"+str(distanzaX))
+	print("distanza su asse y:"+str(distanzaY))
 	return
 
-def angolo_spalla_supera_75_gradi(x):
-	return
+def angolo_massimo_spalla(x):
+	max_angolo_destro=0
+	max_angolo_sinistro=0
+	for i in range(len(x)):
+		#siccome l'anca e la spalla non sono sulla stessa asse verticale(stessa x) utiliziamo il valore di x della spalla anche per la x dell'anca
+		ang_destro=calculate_angle([x[i][48],x[i][97]],[x[i][48],x[i][49]],[x[i][56],x[i][57]])
+		ang_sinistro=calculate_angle([x[i][44],x[i][93]],[x[i][44],x[i][45]],[x[i][52],x[i][53]])
+		if ang_sinistro>max_angolo_sinistro:
+			max_angolo_sinistro=ang_sinistro
+		if ang_destro>max_angolo_destro:
+			max_angolo_destro=ang_destro
+
+	return max_angolo_destro,max_angolo_sinistro
 
 def calculate_feature_alzateLaterali(X):
 	list_feature_X=[]
 
 	#for i in range(len(X)):
-	for i in range(181,182):
+	for i in range(90,91):
 		coeff_schiena=schiena_dritta(X[i])
 		print("coeff schiena: "+ str(coeff_schiena))
+
 		coeff_braccia=braccia_tese(X[i])
 		print("coeff braccia: "+str(coeff_braccia))
+
 		coeff_mov_braccia=mov_braccia_simmetrico(X[i])
-		coeff_angolo_spalla=angolo_spalla_supera_75_gradi(X[i])
-		list_feature_X.append([coeff_schiena,coeff_braccia,coeff_mov_braccia,coeff_angolo_spalla])
+
+		angolo_spalla_destra,angolo_spalla_sinistra=angolo_massimo_spalla(X[i])
+		print("max angolo spalla destra: "+str(angolo_spalla_destra))
+		print("max angolo spalla sinistra: "+str(angolo_spalla_sinistra))
+
+		list_feature_X.append([coeff_schiena,coeff_braccia,coeff_mov_braccia,angolo_spalla_destra,angolo_spalla_sinistra])
 	
 	return np.array(list_feature_X)
