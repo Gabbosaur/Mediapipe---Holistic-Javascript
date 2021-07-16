@@ -79,14 +79,16 @@ def braccia_tese(x):
 		d_sinistra=math.sqrt((pow((x[i][44]-x[i][60]),2)+pow((x[i][45]-x[i][61]),2)))
 		dist_destra.append(d_destra)
 		dist_sinistra.append(d_sinistra)
-
+	'''
 	print("dist destra: "+str(dist_destra))
 	print("dist sinistra: "+str(dist_sinistra))
+	'''
+
 	dist_max_destra=max(dist_destra)
 	dist_max_sinistra=max(dist_sinistra)
 	numerator_destra=0
 	numerator_sinistra=0
-
+	
 	'''
 	dist_s=0
 	for j in range(len(dist_destra)):
@@ -102,10 +104,10 @@ def braccia_tese(x):
 
 	coeff_destra=numerator_destra/len(dist_destra)
 	coeff_sinistra=numerator_sinistra/len(dist_sinistra)
-
+	'''
 	print(coeff_destra)
 	print(coeff_sinistra)
-
+	'''
 	########plot
 	x=list(range(0,len(dist_sinistra)))
 	x=np.array(x)
@@ -123,24 +125,55 @@ def braccia_tese(x):
 
 	return min(coeff_destra,coeff_sinistra)
 
+def braccia_tese_angolo(x):
+	somma_angolo_gomito_destro=0
+	somma_angolo_gomito_sinistro=0
+	angolo_gomito_destro=[]
+	angolo_gomito_sinistro=[]
 
+	for i in range(len(x)):
+		angolo_gomito_destro.append(calculate_angle([x[i][48],x[i][49]], [x[i][56],x[i][57]], [x[i][64],x[i][65]]))
+		angolo_gomito_sinistro.append(calculate_angle([x[i][44],x[i][45]], [x[i][52],x[i][53]], [x[i][60],x[i][61]]))
+
+		somma_angolo_gomito_destro=somma_angolo_gomito_destro+angolo_gomito_destro[i]
+		somma_angolo_gomito_sinistro=somma_angolo_gomito_sinistro+angolo_gomito_sinistro[i]
+
+	angolo_medio_gomito_destro=somma_angolo_gomito_destro/(180*len(x))
+	angolo_medio_gomito_sinistro=somma_angolo_gomito_sinistro/(180*len(x))
+
+	########plot
+	x=list(range(0,len(angolo_gomito_destro)))
+	x=np.array(x)
+
+	plt.xlabel("numero frame")
+	plt.ylabel("distanza")
+	plt.plot(x,angolo_gomito_destro,label="angolo gomito destro")
+	plt.plot(x,angolo_gomito_sinistro,label="angolo gomito sinistro")
+	plt.legend(loc="best")
+
+	axes = plt.gca()
+	axes.set_ylim([0,200])
+	plt.show()
+	#######fine plot
+	
+	return angolo_medio_gomito_destro,angolo_medio_gomito_sinistro
 
 def mov_braccia_simmetrico(x):
 	distanzaX=0
 	distanzaY=0
 	for i in range(len(x)):
-		com_x=max(x[i][48],x[i][44]) - min((x[i][48],x[i][44])) #x del centro di massa
+		com_x=(x[i][48]+x[i][44])/2 #x del centro di massa
 		#dist_X=abs(x[i][64]-x[i][60])
 
 		dist_X=abs(abs(x[i][64]-com_x)-abs(x[i][60]-com_x))
 		dist_Y=abs(x[i][65]-x[i][61])
 
 		distanzaX=distanzaX+dist_X
-		print("d:"+str(distanzaX))
+		#print("x:"+str(distanzaX))
 		distanzaY=distanzaY+dist_Y
-	print("distanza su asse x:"+str(distanzaX))
-	print("distanza su asse y:"+str(distanzaY))
-	return
+		#print("y:"+str(distanzaY))
+
+	return distanzaX,distanzaY
 
 def angolo_massimo_spalla(x):
 	max_angolo_destro=0
@@ -159,20 +192,36 @@ def angolo_massimo_spalla(x):
 def calculate_feature_alzateLaterali(X):
 	list_feature_X=[]
 
+	'''
+	0-->0-52 braccia piegate
+	1-->53-95 braccia asimmetriche
+	2-->96-141 no 90 gradi
+	3-->142-187 ok
+	'''
+
+
 	#for i in range(len(X)):
-	for i in range(90,91):
+	j=10
+	for i in range(j,j+1):
+
 		coeff_schiena=schiena_dritta(X[i])
 		print("coeff schiena: "+ str(coeff_schiena))
 
 		coeff_braccia=braccia_tese(X[i])
 		print("coeff braccia: "+str(coeff_braccia))
 
-		coeff_mov_braccia=mov_braccia_simmetrico(X[i])
+		coeff_angolo_medio_braccio_destro,coeff_angolo_medio_braccio_sinistro=braccia_tese_angolo(X[i])
+		print("angolo medio destro:"+str(coeff_angolo_medio_braccio_destro))
+		print("angolo medio sinistro:"+str(coeff_angolo_medio_braccio_sinistro))
+
+		coeff_simm_x,coeff_simm_y=mov_braccia_simmetrico(X[i])
+		print("coefficiente simmetria asse x: "+str(coeff_simm_x))
+		print("coefficiente simmetria asse x: "+str(coeff_simm_y))
 
 		angolo_spalla_destra,angolo_spalla_sinistra=angolo_massimo_spalla(X[i])
 		print("max angolo spalla destra: "+str(angolo_spalla_destra))
 		print("max angolo spalla sinistra: "+str(angolo_spalla_sinistra))
 
-		list_feature_X.append([coeff_schiena,coeff_braccia,coeff_mov_braccia,angolo_spalla_destra,angolo_spalla_sinistra])
+		list_feature_X.append([coeff_schiena,coeff_braccia,coeff_simm_x,coeff_simm_y,angolo_spalla_destra,angolo_spalla_sinistra])
 	
 	return np.array(list_feature_X)

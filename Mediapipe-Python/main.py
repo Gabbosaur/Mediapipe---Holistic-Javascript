@@ -82,9 +82,3 @@ train_module.test(X_test,y_test,model,actions)
 '''
 math_module.calculate_feature_alzateLaterali(X)
 
-'''
-0-->0-52 braccia piegate
-1-->53-95 braccia asimmetriche
-2-->96-141 no 90 gradi
-3-->142-187 ok
-'''
