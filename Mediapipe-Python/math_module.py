@@ -2,6 +2,11 @@ import numpy as np
 import math
 from matplotlib import pyplot as plt
 
+#x_schiena=[]
+#y_schiena=[]
+
+
+
 def calculate_angle(a, b, c):
 	a = np.array(a)  # First
 	b = np.array(b)  # Mid
@@ -37,20 +42,25 @@ def schiena_dritta(x):
 
 	for i in range(len(dist)):
 		numerator= numerator+(dist[i]/dist_max)
-
+	
 	########plot
-	x=list(range(0,len(dist)))
-	x=np.array(x)
-
+	asse_x=list(range(0,len(dist)))
+	asse_x=np.array(asse_x)
+	'''
 	plt.xlabel("numero frame")
 	plt.ylabel("distanza")
-	plt.plot(x,dist,label="schiena")
+	plt.plot(asse_x,dist,label="schiena")
 	plt.legend(loc="best")
 
 	axes = plt.gca()
 	axes.set_ylim([0,1])
 	plt.show()
 	#######fine plot
+	'''
+	global x_schiena,y_schiena
+	#x_schiena=[],y_schiena=[]
+	x_schiena=asse_x
+	y_schiena=dist
 
 	return numerator/len(dist)
 
@@ -109,19 +119,25 @@ def braccia_tese(x):
 	print(coeff_sinistra)
 	'''
 	########plot
-	x=list(range(0,len(dist_sinistra)))
-	x=np.array(x)
-
+	asse_x=list(range(0,len(dist_sinistra)))
+	asse_x=np.array(asse_x)
+	'''
 	plt.xlabel("numero frame")
 	plt.ylabel("distanza")
-	plt.plot(x,dist_sinistra,label="braccio sinistro")
-	plt.plot(x,dist_destra,label="braccio destro")
+	plt.plot(asse_x,dist_sinistra,label="braccio sinistro")
+	plt.plot(asse_x,dist_destra,label="braccio destro")
 	plt.legend(loc="best")
 
 	axes = plt.gca()
 	axes.set_ylim([0,1])
 	plt.show()
 	#######fine plot
+	'''
+	global x_b,y_b_sinistro,y_b_destro
+	
+	x_b=asse_x
+	y_b_sinistro=dist_sinistra
+	y_b_destro=dist_destra
 
 	return min(coeff_destra,coeff_sinistra)
 
@@ -142,20 +158,27 @@ def braccia_tese_angolo(x):
 	angolo_medio_gomito_sinistro=somma_angolo_gomito_sinistro/(180*len(x))
 
 	########plot
-	x=list(range(0,len(angolo_gomito_destro)))
-	x=np.array(x)
-
+	asse_x=list(range(0,len(angolo_gomito_destro)))
+	asse_x=np.array(asse_x)
+	'''
 	plt.xlabel("numero frame")
 	plt.ylabel("distanza")
-	plt.plot(x,angolo_gomito_destro,label="angolo gomito destro")
-	plt.plot(x,angolo_gomito_sinistro,label="angolo gomito sinistro")
+	plt.plot(asse_x,angolo_gomito_destro,label="angolo gomito destro")
+	plt.plot(asse_x,angolo_gomito_sinistro,label="angolo gomito sinistro")
 	plt.legend(loc="best")
 
 	axes = plt.gca()
 	axes.set_ylim([0,200])
 	plt.show()
 	#######fine plot
+	'''
+	global x_ang,y_angolo_gomito_sinistro,y_angolo_gomito_destro
 	
+	x_ang=asse_x
+	y_angolo_gomito_sinistro=angolo_gomito_sinistro
+	y_angolo_gomito_destro=angolo_gomito_destro
+
+
 	return angolo_medio_gomito_destro,angolo_medio_gomito_sinistro
 
 def mov_braccia_simmetrico(x):
@@ -178,16 +201,76 @@ def mov_braccia_simmetrico(x):
 def angolo_massimo_spalla(x):
 	max_angolo_destro=0
 	max_angolo_sinistro=0
+	ang_spall_d=[]
+	ang_spall_s=[]
+
 	for i in range(len(x)):
 		#siccome l'anca e la spalla non sono sulla stessa asse verticale(stessa x) utiliziamo il valore di x della spalla anche per la x dell'anca
 		ang_destro=calculate_angle([x[i][48],x[i][97]],[x[i][48],x[i][49]],[x[i][56],x[i][57]])
 		ang_sinistro=calculate_angle([x[i][44],x[i][93]],[x[i][44],x[i][45]],[x[i][52],x[i][53]])
+		ang_spall_d.append(ang_destro)
+		ang_spall_s.append(ang_sinistro)
 		if ang_sinistro>max_angolo_sinistro:
 			max_angolo_sinistro=ang_sinistro
 		if ang_destro>max_angolo_destro:
 			max_angolo_destro=ang_destro
 
+	global x_spalla,angolo_destro_spalla,angolo_sinistro_spalla
+	asse_x=list(range(0,len(ang_spall_d)))
+	
+	x_spalla=np.array(asse_x)
+	angolo_destro_spalla=ang_spall_d
+	angolo_sinistro_spalla=ang_spall_s
+
 	return max_angolo_destro,max_angolo_sinistro
+
+def print_graph():
+	#fig, axs = plt.subplots(2, 2)
+	fig=plt.figure()
+	gs = fig.add_gridspec(2, 2)
+	
+	ax1=plt.subplot(gs[0,0])
+	ax2=plt.subplot(gs[0,1])
+	ax3=plt.subplot(gs[1,0])
+	ax4=plt.subplot(gs[1,1])
+
+	ax1.plot(x_schiena, y_schiena,label="schiena")
+	ax1.set_title("schiena")
+	ax1.set_xlabel("numero frame")
+	ax1.set_ylabel("distanza")
+	ax1.legend(loc="best")
+	ax1.set_ylim([0,1])
+
+
+	ax2.plot(x_b, y_b_sinistro,label="braccio sinistro")
+	ax2.plot(x_b, y_b_destro,label="braccio destro")
+	ax2.set_title("estensione braccia")
+	ax2.set_xlabel("numero frame")
+	ax2.set_ylabel("dist spalla gomito")
+	ax2.legend(loc="best")
+	ax2.set_ylim([0,1])
+
+
+	ax3.plot(x_ang, y_angolo_gomito_sinistro,label="angolo gomito sinistro")
+	ax3.plot(x_ang, y_angolo_gomito_destro,label="angolo gomito destro")
+	ax3.set_title("angolo dei gomiti")
+	ax3.set_xlabel("numero frame")
+	ax3.set_ylabel("angolo gomito")
+	ax3.legend(loc="best")
+	ax3.set_ylim([0,200])
+	
+	ax4.plot(x_spalla, angolo_sinistro_spalla,label="angolo spalla sinistra")
+	ax4.plot(x_spalla, angolo_destro_spalla,label="angolo spalla destra")
+	ax4.set_title("angolo delle spalle")
+	ax4.set_xlabel("numero frame")
+	ax4.set_ylabel("angolo spalla")
+	ax4.legend(loc="best")
+	ax4.set_ylim([0,200])
+
+
+
+	fig.tight_layout()
+	plt.show()
 
 def calculate_feature_alzateLaterali(X):
 	list_feature_X=[]
@@ -199,10 +282,13 @@ def calculate_feature_alzateLaterali(X):
 	3-->142-187 ok
 	'''
 
-
+	import itertools as it
 	#for i in range(len(X)):
-	j=10
-	for i in range(j,j+1):
+	a=10
+	b=70
+	c=110
+	d=180
+	for i in it.chain(range(a, a+1), range(b, b+1),range(c,c+1),range(d,d+1)):
 
 		coeff_schiena=schiena_dritta(X[i])
 		print("coeff schiena: "+ str(coeff_schiena))
@@ -221,6 +307,8 @@ def calculate_feature_alzateLaterali(X):
 		angolo_spalla_destra,angolo_spalla_sinistra=angolo_massimo_spalla(X[i])
 		print("max angolo spalla destra: "+str(angolo_spalla_destra))
 		print("max angolo spalla sinistra: "+str(angolo_spalla_sinistra))
+
+		print_graph()
 
 		list_feature_X.append([coeff_schiena,coeff_braccia,coeff_simm_x,coeff_simm_y,angolo_spalla_destra,angolo_spalla_sinistra])
 	
