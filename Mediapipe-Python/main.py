@@ -100,32 +100,4 @@ X_train, X_test, y_train, y_test,model=decisionTree_module.load_split_model()
 #Predict the response for test dataset
 y_pred = model.predict(X_test)
 
-
-
-print("\nPREDICTIONS\n")
-decisionTree_module.accuracy_score(y_test, y_pred)
-
-matrix = [[0 for x in range(4)] for y in range(4)]
-errori=0
-for i in range(0,len(y_test)):
-	if(np.argmax(y_pred[i]) != np.argmax(y_test[i])):
-		matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])]=matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])] + 1
-		errori=errori+1
-	#print("valore predetto per campione "+ str(i)+ ": "+str(actions[np.argmax(y_pred[i])])) #prediction
-	#print("valore effettivo per campione "+ str(i)+ ": "+str(actions[np.argmax(y_test[i])])+"\n") #valore effettivo
-
-
-for i in range(4):
-	matrix[i][i]="X"
-
-import pandas as pd
-mat=pd.DataFrame(np.row_stack(matrix))
-mat.columns=["predict as "+str(actions[0]), "predict as "+str(actions[1]), "predict as "+str(actions[2]), "predict as "+str(actions[3])]
-mat.index=[actions[0], actions[1], actions[2], actions[3]]
-
-
-print("error matrix")
-print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori)+"\n")
-print(mat)
-
-
+decisionTree_module.accuracy_score(y_test, y_pred,actions)

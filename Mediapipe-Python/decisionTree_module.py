@@ -36,9 +36,40 @@ def load_split_model():
 
 
 
-def accuracy_score(y_test, y_pred):
+def accuracy_score(y_test, y_pred,actions):
+	print("\nPREDICTIONS\n")
 	# Model Accuracy, how often is the classifier correct?
 	print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+	
+	matrix = [[0 for x in range(len(actions))] for y in range(len(actions))]
+	errori=0
+	for i in range(0,len(y_test)):
+		if(np.argmax(y_pred[i]) != np.argmax(y_test[i])):
+			matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])]=matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])] + 1
+			errori=errori+1
+		#print("valore predetto per campione "+ str(i)+ ": "+str(actions[np.argmax(y_pred[i])])) #prediction
+		#print("valore effettivo per campione "+ str(i)+ ": "+str(actions[np.argmax(y_test[i])])+"\n") #valore effettivo
+
+
+	for i in range(len(actions)):
+		matrix[i][i]="X"
+
+	import pandas as pd
+	mat=pd.DataFrame(np.row_stack(matrix))
+	col=[]
+	for i in range(len(actions)):
+		col.append("predicted as "+str(actions[i]))
+
+	mat.columns=col
+
+	mat.index=actions
+
+	print("error matrix")
+	print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori)+"\n")
+	print(mat)
+
+
+
 
 
 def train(X_train,y_train):
