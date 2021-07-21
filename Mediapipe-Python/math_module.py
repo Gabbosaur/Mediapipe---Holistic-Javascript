@@ -281,35 +281,36 @@ def calculate_feature_alzateLaterali(X):
 	2-->96-141 no 90 gradi
 	3-->142-187 ok
 	'''
-
+	'''
 	import itertools as it
-	#for i in range(len(X)):
 	a=10
 	b=70
 	c=110
 	d=180
 	for i in it.chain(range(a, a+1), range(b, b+1),range(c,c+1),range(d,d+1)):
-
+	'''
+	for i in range(len(X)):
+		
 		coeff_schiena=schiena_dritta(X[i])
-		print("coeff schiena: "+ str(coeff_schiena))
+		#print("coeff schiena: "+ str(coeff_schiena))
 
 		coeff_braccia=braccia_tese(X[i])
-		print("coeff braccia: "+str(coeff_braccia))
+		#print("coeff braccia: "+str(coeff_braccia))
 
 		coeff_angolo_medio_braccio_destro,coeff_angolo_medio_braccio_sinistro=braccia_tese_angolo(X[i])
-		print("angolo medio destro:"+str(coeff_angolo_medio_braccio_destro))
-		print("angolo medio sinistro:"+str(coeff_angolo_medio_braccio_sinistro))
+		#print("angolo medio destro:"+str(coeff_angolo_medio_braccio_destro))
+		#print("angolo medio sinistro:"+str(coeff_angolo_medio_braccio_sinistro))
 
 		coeff_simm_x,coeff_simm_y=mov_braccia_simmetrico(X[i])
-		print("coefficiente simmetria asse x: "+str(coeff_simm_x))
-		print("coefficiente simmetria asse x: "+str(coeff_simm_y))
+		#print("coefficiente simmetria asse x: "+str(coeff_simm_x))
+		#print("coefficiente simmetria asse x: "+str(coeff_simm_y))
 
 		angolo_spalla_destra,angolo_spalla_sinistra=angolo_massimo_spalla(X[i])
-		print("max angolo spalla destra: "+str(angolo_spalla_destra))
-		print("max angolo spalla sinistra: "+str(angolo_spalla_sinistra))
+		#print("max angolo spalla destra: "+str(angolo_spalla_destra))
+		#print("max angolo spalla sinistra: "+str(angolo_spalla_sinistra))
 
-		print_graph()
+		#print_graph()
 
-		list_feature_X.append([coeff_schiena,coeff_braccia,coeff_simm_x,coeff_simm_y,angolo_spalla_destra,angolo_spalla_sinistra])
+		list_feature_X.append([coeff_schiena,coeff_braccia,coeff_angolo_medio_braccio_destro,coeff_angolo_medio_braccio_sinistro,coeff_simm_x,coeff_simm_y,angolo_spalla_destra,angolo_spalla_sinistra])
 	
 	return np.array(list_feature_X)
