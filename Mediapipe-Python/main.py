@@ -100,7 +100,7 @@ X_train, X_test, y_train, y_test,model=decisionTree_module.load_split_model()
 # Funzione che dovrebbe andare ma dà l'errore che manca "actions"
 # decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
 
-###################################### INIZIO
+###################################### INIZIO funzione
 import optuna
 from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
 from sklearn.metrics import accuracy_score
