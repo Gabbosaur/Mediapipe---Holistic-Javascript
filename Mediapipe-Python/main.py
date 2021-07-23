@@ -12,7 +12,6 @@ import mediapipe as mp
 import numpy as np
 import math
 import os
-import pandas
 from scipy.sparse.sputils import matrix
 
 from tensorflow.keras.utils import to_categorical
@@ -97,7 +96,43 @@ model=decisionTree_module.train(X_train,y_train)
 #oppure carica dati già splittati e modello trainato
 X_train, X_test, y_train, y_test,model=decisionTree_module.load_split_model()
 
-#Predict the response for test dataset
-y_pred = model.predict(X_test)
 
-decisionTree_module.accuracy_score(y_test, y_pred,actions)
+
+# decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
+
+
+import optuna
+from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
+# from sklearn import metrics #Import scikit-learn metrics module for accuracy calculation
+from sklearn.metrics import accuracy_score
+
+def objective(trial):
+	dtc_params = dict(
+		max_depth = trial.suggest_int("max_depth", 2, 10),
+		min_samples_split = trial.suggest_int("min_samples_split", 2, 10),
+		max_leaf_nodes = int(trial.suggest_int("max_leaf_nodes", 2, 10)),
+		criterion = trial.suggest_categorical("criterion", ["gini", "entropy"]),
+	)
+	DTC = DecisionTreeClassifier(**dtc_params) # DTC con i range di parametri dati
+	DTC.fit(X_train, y_train) # Training del modello con i dati 
+
+	error = 1.0 - accuracy_score(y_test, DTC.predict(X_test))
+	return error
+
+
+# 3. Create a study object and optimize the objective function.
+study = optuna.create_study() # di default è minimize, quindi di minimizzare l'errore
+study.optimize(objective, n_trials=500)
+
+print(study.best_params)
+print(1.0 - study.best_value)
+
+
+
+
+
+
+#Predict the response for test dataset
+# y_pred = model.predict(X_test)
+
+# decisionTree_module.accuracy_score(y_test, y_pred,actions)
