@@ -4,7 +4,7 @@ import pickle
 from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
 from sklearn.model_selection import train_test_split # Import train_test_split function
 from sklearn import metrics #Import scikit-learn metrics module for accuracy calculation
-
+import optuna
 
 def conversione_dataset_al(x):
 	X=pd.DataFrame(np.row_stack(x))
@@ -54,7 +54,6 @@ def accuracy_score(y_test, y_pred,actions):
 	for i in range(len(actions)):
 		matrix[i][i]="X"
 
-	import pandas as pd
 	mat=pd.DataFrame(np.row_stack(matrix))
 	col=[]
 	for i in range(len(actions)):
@@ -68,16 +67,40 @@ def accuracy_score(y_test, y_pred,actions):
 	print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori)+"\n")
 	print(mat)
 
+from sklearn.metrics import accuracy_score
 
+def objective(trial):
+	X_train, X_test, y_train, y_test,model=load_split_model()
+
+	max_depth = trial.suggest_int("max_depth", 2, 612)
+
+	min_samples_split = trial.suggest_int("min_samples_split", 2, 612)
+
+	max_leaf_nodes = int(trial.suggest_int("max_leaf_nodes", 2, 612))
+
+	criterion = trial.suggest_categorical("criterion", ["gini", "entropy"])
+
+	DTC = DecisionTreeClassifier(max_depth=max_depth,min_samples_split = min_samples_split,max_leaf_nodes = max_leaf_nodes,criterion = criterion)
+
+	DTC.fit(X_train, y_train)
+
+	return 1.0 - accuracy_score(y_test, DTC.predict(X_test))
 
 
 
 def train(X_train,y_train):
 	# Create Decision Tree classifer object
-	clf = DecisionTreeClassifier()
+	#clf = DecisionTreeClassifier()
+
+
+	study = optuna.create_study()
+	study.optimize(objective, n_trials = 500)
 
 	# Train Decision Tree Classifer
+	clf_param=study.best_params
+	clf=DecisionTreeClassifier(**clf_param)
 	clf = clf.fit(X_train,y_train)
+
 
 	# save the model to disk
 	filename = 'decision_tree.sav'

@@ -96,8 +96,10 @@ model=decisionTree_module.train(X_train,y_train)
 
 #oppure carica dati già splittati e modello trainato
 X_train, X_test, y_train, y_test,model=decisionTree_module.load_split_model()
-
+model=decisionTree_module.train(X_train,y_train)
 #Predict the response for test dataset
 y_pred = model.predict(X_test)
+
+print(y_pred)
 
 decisionTree_module.accuracy_score(y_test, y_pred,actions)
