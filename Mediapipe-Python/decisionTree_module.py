@@ -1,15 +1,15 @@
 import pandas as pd
 import numpy as np
 import pickle
+import optuna
 from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
 from sklearn.model_selection import train_test_split # Import train_test_split function
-from sklearn import metrics #Import scikit-learn metrics module for accuracy calculation
-
+# from sklearn import metrics #Import scikit-learn metrics module for accuracy calculation
+from sklearn.metrics import accuracy_score
 
 def conversione_dataset_al(x):
 	X=pd.DataFrame(np.row_stack(x))
 	X.columns=["coeff_schiena", "coeff_braccia", "coeff_angolo_medio_braccio_destro", "coeff_angolo_medio_braccio_sinistro", "coeff_simm_x", "coeff_simm_y", "angolo_spalla_destra", "angolo_spalla_sinistra"]
-	
 	return X
 
 def split(X,y):
@@ -54,11 +54,10 @@ def accuracy_score(y_test, y_pred,actions):
 	for i in range(len(actions)):
 		matrix[i][i]="X"
 
-	import pandas as pd
 	mat=pd.DataFrame(np.row_stack(matrix))
 	col=[]
 	for i in range(len(actions)):
-		col.append("predicted as "+str(actions[i]))
+		col.append(actions[i])
 
 	mat.columns=col
 
@@ -67,9 +66,6 @@ def accuracy_score(y_test, y_pred,actions):
 	print("error matrix")
 	print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori)+"\n")
 	print(mat)
-
-
-
 
 
 def train(X_train,y_train):
@@ -84,4 +80,31 @@ def train(X_train,y_train):
 	pickle.dump(clf, open(filename, 'wb'))
 
 	return clf
+
+
+
+
+
+def findBestHyperparameters(X_train, y_train, X_test, y_test):
+	def objective(trial):
+		dtc_params = dict(
+			max_depth = trial.suggest_int("max_depth", 2, 10),
+			min_samples_split = trial.suggest_int("min_samples_split", 2, 10),
+			max_leaf_nodes = int(trial.suggest_int("max_leaf_nodes", 2, 10)),
+			criterion = trial.suggest_categorical("criterion", ["gini", "entropy"]),
+		)
+		DTC = DecisionTreeClassifier(**dtc_params) # DTC con i range di parametri dati
+		DTC.fit(X_train, y_train) # Training del modello con i dati 
+
+		error = 1.0 - accuracy_score(y_test, DTC.predict(X_test))
+		return error
+
+
+	# 3. Create a study object and optimize the objective function.
+	study = optuna.create_study() # di default è minimize, quindi di minimizzare l'errore
+	study.optimize(objective, n_trials=500)
+
+	print(study.best_params)
+	print(1.0 - study.best_value)
+
 

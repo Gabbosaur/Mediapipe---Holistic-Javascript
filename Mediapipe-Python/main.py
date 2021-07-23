@@ -97,13 +97,12 @@ model=decisionTree_module.train(X_train,y_train)
 X_train, X_test, y_train, y_test,model=decisionTree_module.load_split_model()
 
 
-
+# Funzione che dovrebbe andare ma dà l'errore che manca "actions"
 # decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
 
-
+###################################### INIZIO
 import optuna
 from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
-# from sklearn import metrics #Import scikit-learn metrics module for accuracy calculation
 from sklearn.metrics import accuracy_score
 
 def objective(trial):
@@ -114,7 +113,7 @@ def objective(trial):
 		criterion = trial.suggest_categorical("criterion", ["gini", "entropy"]),
 	)
 	DTC = DecisionTreeClassifier(**dtc_params) # DTC con i range di parametri dati
-	DTC.fit(X_train, y_train) # Training del modello con i dati 
+	DTC.fit(X_train, y_train) # Training del modello con i dati
 
 	error = 1.0 - accuracy_score(y_test, DTC.predict(X_test))
 	return error
@@ -128,7 +127,7 @@ print(study.best_params)
 print(1.0 - study.best_value)
 
 
-
+################################### FINE
 
 
 
