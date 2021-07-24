@@ -93,18 +93,17 @@ X=decisionTree_module.conversione_dataset_al(feature_X)
 # Split dataset into training set and test set
 '''
 X_train, X_test, y_train, y_test = decisionTree_module.split(X,y)
-# Funzione che dovrebbe andare ma dà l'errore che manca "actions"
+
+
 study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
+#train
 model=decisionTree_module.train(X_train,y_train,study.best_params)
 '''
 
 #oppure carica dati già splittati e modello trainato
-
 X_train, X_test, y_train, y_test,model=decisionTree_module.load_split_model()
 
-# Funzione che dovrebbe andare ma dà l'errore che manca "actions"
 study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
-
 #train
 model=decisionTree_module.train(X_train, y_train,study.best_params)
 
