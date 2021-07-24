@@ -19,6 +19,9 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.callbacks import TensorBoard
+from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
+from sklearn.model_selection import train_test_split # Import train_test_split function
+from sklearn.metrics import accuracy_score as AS
 
 #nostri moduli
 import Tpose_module
@@ -90,48 +93,23 @@ X=decisionTree_module.conversione_dataset_al(feature_X)
 # Split dataset into training set and test set
 '''
 X_train, X_test, y_train, y_test = decisionTree_module.split(X,y)
-model=decisionTree_module.train(X_train,y_train)
+# Funzione che dovrebbe andare ma dà l'errore che manca "actions"
+study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
+model=decisionTree_module.train(X_train,y_train,study.best_params)
 '''
 
 #oppure carica dati già splittati e modello trainato
+
 X_train, X_test, y_train, y_test,model=decisionTree_module.load_split_model()
 
-
 # Funzione che dovrebbe andare ma dà l'errore che manca "actions"
-# decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
+study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
 
-###################################### INIZIO funzione
-import optuna
-from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
-from sklearn.metrics import accuracy_score
-
-def objective(trial):
-	dtc_params = dict(
-		max_depth = trial.suggest_int("max_depth", 2, 10),
-		min_samples_split = trial.suggest_int("min_samples_split", 2, 10),
-		max_leaf_nodes = int(trial.suggest_int("max_leaf_nodes", 2, 10)),
-		criterion = trial.suggest_categorical("criterion", ["gini", "entropy"]),
-	)
-	DTC = DecisionTreeClassifier(**dtc_params) # DTC con i range di parametri dati
-	DTC.fit(X_train, y_train) # Training del modello con i dati
-
-	error = 1.0 - accuracy_score(y_test, DTC.predict(X_test))
-	return error
-
-
-# 3. Create a study object and optimize the objective function.
-study = optuna.create_study() # di default è minimize, quindi di minimizzare l'errore
-study.optimize(objective, n_trials=500)
-
-print(study.best_params)
-print(1.0 - study.best_value)
-
-
-################################### FINE
-
+#train
+model=decisionTree_module.train(X_train, y_train,study.best_params)
 
 
 #Predict the response for test dataset
-# y_pred = model.predict(X_test)
+y_pred = model.predict(X_test)
 
-# decisionTree_module.accuracy_score(y_test, y_pred,actions)
+decisionTree_module.accuracy_score(y_test, y_pred,actions)

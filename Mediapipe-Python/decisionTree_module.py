@@ -4,7 +4,8 @@ import pickle
 import optuna
 from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
 from sklearn.model_selection import train_test_split # Import train_test_split function
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score as AS
+import sklearn.metrics as metrics
 
 def conversione_dataset_al(x):
 	X=pd.DataFrame(np.row_stack(x))
@@ -78,30 +79,19 @@ def objective(trial):
 	max_leaf_nodes = int(trial.suggest_int("max_leaf_nodes", 2, 612))
 
 	criterion = trial.suggest_categorical("criterion", ["gini", "entropy"])
-
-def train(X_train,y_train):
+'''
+def train(X_train,y_train,best_params):
 	# Create Decision Tree classifer object
-	#clf = DecisionTreeClassifier()
+	model = DecisionTreeClassifier(**best_params)
 
-
-	study = optuna.create_study()
-	study.optimize(objective, n_trials = 500)
-
-	# Train Decision Tree Classifer
-	clf_param=study.best_params
-	clf=DecisionTreeClassifier(**clf_param)
-	clf = clf.fit(X_train,y_train)
+	model.fit(X_train, y_train) # Training del modello con i dati
 
 
 	# save the model to disk
 	filename = 'decision_tree.sav'
-	pickle.dump(clf, open(filename, 'wb'))
+	pickle.dump(model, open(filename, 'wb'))
 
-	return clf
-
-'''
-
-
+	return model
 
 def findBestHyperparameters(X_train, y_train, X_test, y_test):
 	def objective(trial):
@@ -112,9 +102,9 @@ def findBestHyperparameters(X_train, y_train, X_test, y_test):
 			criterion = trial.suggest_categorical("criterion", ["gini", "entropy"]),
 		)
 		DTC = DecisionTreeClassifier(**dtc_params) # DTC con i range di parametri dati
-		DTC.fit(X_train, y_train) # Training del modello con i dati 
+		DTC.fit(X_train, y_train) # Training del modello con i dati
 
-		error = 1.0 - accuracy_score(y_test, DTC.predict(X_test))
+		error = 1.0 - AS(y_test, DTC.predict(X_test))
 		return error
 
 
@@ -124,5 +114,6 @@ def findBestHyperparameters(X_train, y_train, X_test, y_test):
 
 	print(study.best_params) # Printa i migliori parametri
 	print(1.0 - study.best_value) # Printa l'accuracy
+	return study
 
 
