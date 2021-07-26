@@ -29,6 +29,7 @@ import annotateData_module
 import train_module
 import math_module
 import decisionTree_module
+import alzateLaterali_live_module
 
 #Tpose_module.Tpose()
 
@@ -103,12 +104,15 @@ model=decisionTree_module.train(X_train,y_train,study.best_params)
 #oppure carica dati già splittati e modello trainato
 X_train, X_test, y_train, y_test,model=decisionTree_module.load_split_model()
 
-study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
+#study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
 #train
-model=decisionTree_module.train(X_train, y_train,study.best_params)
+#model=decisionTree_module.train(X_train, y_train,study.best_params)
 
 
 #Predict the response for test dataset
 y_pred = model.predict(X_test)
 
 decisionTree_module.accuracy_score(y_test, y_pred,actions)
+
+num_rep=5
+alzateLaterali_live_module.alzateLaterali_live(model,num_rep)

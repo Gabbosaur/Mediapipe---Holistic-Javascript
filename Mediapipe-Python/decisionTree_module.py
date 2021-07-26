@@ -40,7 +40,7 @@ def accuracy_score(y_test, y_pred,actions):
 	print("\nPREDICTIONS\n")
 	# Model Accuracy, how often is the classifier correct?
 	print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
-	
+
 	matrix = [[0 for x in range(len(actions))] for y in range(len(actions))]
 	errori=0
 	for i in range(0,len(y_test)):
