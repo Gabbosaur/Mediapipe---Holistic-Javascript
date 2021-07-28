@@ -36,7 +36,7 @@ def load_split_model():
 
 
 
-def accuracy_score(y_test, y_pred,actions):
+def accuracy_score(y_test, y_pred, actions):
 	print("\nPREDICTIONS\n")
 	# Model Accuracy, how often is the classifier correct?
 	print("Accuracy:",metrics.accuracy_score(y_test, y_pred))

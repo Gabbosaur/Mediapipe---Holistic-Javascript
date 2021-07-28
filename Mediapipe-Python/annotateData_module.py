@@ -4,7 +4,7 @@ import numpy as np
 import sys
 import pathlib
 import os
-import pickle
+import pickle5 as pickle
 
 
 #funzione privata perchè ha il doppio underscore davanti

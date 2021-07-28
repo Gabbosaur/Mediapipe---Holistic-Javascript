@@ -36,7 +36,7 @@ import alzateLaterali_live_module
 #crea i video e i file pkl annotati dai file mp4 presenti nelle sottocartelle di alzateLaterali
 
 #annotateData_module.createAnnotation("alzateLaterali")
-sequences,labels,actions=annotateData_module.readAnnotation("alzateLaterali")
+sequences, labels, actions = annotateData_module.readAnnotation("alzateLaterali")
 
 print(len(sequences))
 #print(sequences)
@@ -114,5 +114,33 @@ y_pred = model.predict(X_test)
 
 decisionTree_module.accuracy_score(y_test, y_pred,actions)
 
-num_rep=5
-alzateLaterali_live_module.alzateLaterali_live(model,num_rep)
+num_rep=8
+tutte_le_rep = alzateLaterali_live_module.alzateLaterali_live(num_rep)
+# calcolo features e conversione in dataframe
+feature_rep=math_module.calculate_feature_alzateLaterali(tutte_le_rep)
+X_rep=decisionTree_module.conversione_dataset_al(feature_rep)
+
+prediction = model.predict(X_rep)
+
+for i in range(0,len(prediction)):
+	print("valore predetto per campione "+ str(i)+ ": "+str(actions[np.argmax(prediction[i])])) #prediction
+
+
+'''
+0-->0-52 braccia piegate
+1-->53-95 braccia asimmetriche
+2-->96-141 no 90 gradi
+3-->142-187 ok
+'''
+'''
+#calcolo feature
+print("... sto calcolando le features ...")
+feature_X=math_module.calculate_feature_alzateLaterali(record_movimento)
+print("featureX: " + feature_X)
+
+X=decisionTree_module.conversione_dataset_al(feature_X)
+
+prediction = model.predict(X) # array di probabilità. for example: [0 0.3 0.4 0.3] e prendiamo con argmax l'indice con il valore più alto
+print("prediction: " + prediction)
+print("valore predetto: " + str(actions[np.argmax(prediction)])) #prediction
+'''

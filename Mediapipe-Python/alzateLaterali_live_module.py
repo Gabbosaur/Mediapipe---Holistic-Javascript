@@ -6,6 +6,7 @@ import math
 
 #nostri moduli
 import math_module
+import decisionTree_module
 
 """
 # VIDEO FEED
@@ -23,17 +24,19 @@ def __extract_keypoints(results):
 	pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(33*4)
 	return pose
 
-def alzateLaterali_live(model,num_rep):
+def alzateLaterali_live(num_rep):
 
 	mp_drawing = mp.solutions.drawing_utils  # drawing utilities
 	mp_pose = mp.solutions.pose  # pose estimation model di mediapipe
 
-	rep_counter=0
+	rep_counter=0 # contatore di ripetizioni anche se è sbagliato, ma deve superare i 30° di soglia
 	flag_discesa=0
 	flag_salita=0
 	flag_fine_es=0
 	flag_es_valido=0
-	record_movimento=[]
+	record_movimento = []
+	tutte_le_rep = []
+	record = 0
 
 	cap = cv2.VideoCapture(0)
 
@@ -115,37 +118,74 @@ def alzateLaterali_live(model,num_rep):
 				tollerance = 20
 
 				if (angle_shoulder_left < 20 and angle_shoulder_right < 20 and angle_elbow_left >= (180 - tollerance) and angle_elbow_left <= (180 + tollerance) and angle_elbow_right >= (180 - tollerance) and angle_elbow_right <= (180 + tollerance)):
-					flag_salita=1
-					cv2.putText(image,"posizione di partenza riconosciuta",(60,90),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA)
+					record = 1
+					if (flag_discesa == 0):
+						flag_salita = 1
+					cv2.putText(image,"posizione di partenza riconosciuta",(60,120),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA)
 				else:
-					if (angle_shoulder_left >= 30 or angle_shoulder_right >= 30):
-						flag_es_valido=1
-						cv2.putText(image,"soglia validità es superata",
-								(60,60),
-								cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA
-						)
-						if (flag_discesa == 0):
-							flag_salita=0
-							flag_discesa = 1
+					if (flag_salita == 1):
+						if (angle_shoulder_left >= 30 or angle_shoulder_right >= 30):
+							flag_es_valido = 1
+							cv2.putText(image,"soglia validità es superata",
+									(60,120),
+									cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA
+							)
+							if (flag_discesa == 0):
+								flag_salita = 0
+								flag_discesa = 1
+						else:
+							None
 					else:
-						if (angle_shoulder_left < 20 and angle_shoulder_right < 20 and flag_es_valido==1):
-							flag_discesa = 0
-							rep_counter = rep_counter+1
-							flag_fine_es = 1
-				if(flag_salita==1 or flag_discesa==1):
+						None
+
+				# vincolo quando le braccia ritornano giù
+				if (angle_shoulder_left < 15 and angle_shoulder_right < 15 and flag_es_valido==1 and flag_discesa==1):
+					flag_discesa = 0
+					# flag_salita = 0
+					rep_counter = rep_counter+1
+					flag_fine_es = 1
+					record = 0
+
+				# if(flag_salita==1 or flag_discesa==1):
+				# 	frame_pose=__extract_keypoints(results)
+				# 	record_movimento.append(frame_pose)
+				# 	print(".. salvando record movimento ..")
+
+				if(record == 1):
 					frame_pose=__extract_keypoints(results)
 					record_movimento.append(frame_pose)
+					print(".. salvando record movimento ..")
 				else:
 					if(flag_fine_es == 1):
+						flag_fine_es=0
+						
+
+						'''
+						PREDICTION IN REAL TIME, ma troppo lento --> usare i threads ???
 						#calcolo feature
-						#model.predict(feature)
+						print("... sto calcolando le features ...")
+						feature_X=math_module.calculate_feature_alzateLaterali(record_movimento)
+						print("featureX: " + feature_X)
+
+						X=decisionTree_module.conversione_dataset_al(feature_X)
+
+						prediction = model.predict(X) # array di probabilità. for example: [0 0.3 0.4 0.3] e prendiamo con argmax l'indice con il valore più alto
+						print("prediction: " + prediction)
+						print("valore predetto: " + str(actions[np.argmax(prediction)])) #prediction
+						'''
+
+						tutte_le_rep.append(record_movimento)
+						record_movimento = []
 						#tolgo return
+						print("Fine esercizio.")
 
 						if(rep_counter==num_rep):
 							#testo:es completato
 							#aspetta 2 secondi
+							print("Chiusura Webcam.")
 							cap.release()
 							cv2.destroyAllWindows()
+							return tutte_le_rep
 							#passi le classificazioni a main con un return
 						#return record_movimento
 			except:
