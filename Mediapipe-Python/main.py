@@ -10,6 +10,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+import matplotlib.pyplot as plt
 import math
 import os
 from scipy.sparse.sputils import matrix
@@ -22,6 +23,7 @@ from tensorflow.keras.callbacks import TensorBoard
 from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
 from sklearn.model_selection import train_test_split # Import train_test_split function
 from sklearn.metrics import accuracy_score as AS
+from sklearn import tree
 
 #nostri moduli
 import Tpose_module
@@ -87,9 +89,9 @@ train_module.test(X_test,y_test,model,actions)
 '''
 ####################################                   DECISION TREE
 
-feature_X=math_module.calculate_feature_alzateLaterali(X)
+feature_X = math_module.calculate_feature_alzateLaterali(X)
 
-X=decisionTree_module.conversione_dataset_al(feature_X)
+X = decisionTree_module.conversione_dataset_al(feature_X)
 
 # Split dataset into training set and test set
 '''
@@ -102,7 +104,7 @@ model=decisionTree_module.train(X_train,y_train,study.best_params)
 '''
 
 #oppure carica dati già splittati e modello trainato
-X_train, X_test, y_train, y_test,model=decisionTree_module.load_split_model()
+X_train, X_test, y_train, y_test, model = decisionTree_module.load_split_model()
 
 #study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
 #train
@@ -112,18 +114,26 @@ X_train, X_test, y_train, y_test,model=decisionTree_module.load_split_model()
 #Predict the response for test dataset
 y_pred = model.predict(X_test)
 
-decisionTree_module.accuracy_score(y_test, y_pred,actions)
+# Plot tree structure
+plt.figure(figsize=(13,9))
+tree.plot_tree(model, fontsize=9)
+plt.show()
 
-num_rep=8
-tutte_le_rep = alzateLaterali_live_module.alzateLaterali_live(num_rep)
-# calcolo features e conversione in dataframe
-feature_rep=math_module.calculate_feature_alzateLaterali(tutte_le_rep)
-X_rep=decisionTree_module.conversione_dataset_al(feature_rep)
 
-prediction = model.predict(X_rep)
+#decisionTree_module.accuracy_score(y_test, y_pred,actions)
 
-for i in range(0,len(prediction)):
-	print("valore predetto per campione "+ str(i)+ ": "+str(actions[np.argmax(prediction[i])])) #prediction
+
+### Live webcam testing
+# num_rep = 8
+# tutte_le_rep = alzateLaterali_live_module.alzateLaterali_live(num_rep)
+# # calcolo features e conversione in dataframe
+# feature_rep = math_module.calculate_feature_alzateLaterali(tutte_le_rep)
+# X_rep = decisionTree_module.conversione_dataset_al(feature_rep)
+
+# prediction = model.predict(X_rep)
+
+# for i in range(0,len(prediction)):
+# 	print("valore predetto per campione "+ str(i)+ ": "+str(actions[np.argmax(prediction[i])])) #prediction
 
 
 '''
