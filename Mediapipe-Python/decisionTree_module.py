@@ -67,19 +67,7 @@ def accuracy_score(y_test, y_pred, actions):
 	print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori)+"\n")
 	print(mat)
 
-'''
 
-def objective(trial):
-	X_train, X_test, y_train, y_test,model=load_split_model()
-
-	max_depth = trial.suggest_int("max_depth", 2, 612)
-
-	min_samples_split = trial.suggest_int("min_samples_split", 2, 612)
-
-	max_leaf_nodes = int(trial.suggest_int("max_leaf_nodes", 2, 612))
-
-	criterion = trial.suggest_categorical("criterion", ["gini", "entropy"])
-'''
 def train(X_train,y_train,best_params):
 	# Create Decision Tree classifer object
 	model = DecisionTreeClassifier(**best_params)

@@ -22,6 +22,7 @@ from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.callbacks import TensorBoard
 from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
 from sklearn.model_selection import train_test_split # Import train_test_split function
+from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score as AS
 from sklearn import tree
 
@@ -93,6 +94,11 @@ feature_X = math_module.calculate_feature_alzateLaterali(X)
 
 X = decisionTree_module.conversione_dataset_al(feature_X)
 
+
+
+
+
+
 # Split dataset into training set and test set
 '''
 X_train, X_test, y_train, y_test = decisionTree_module.split(X,y)
@@ -115,16 +121,20 @@ X_train, X_test, y_train, y_test, model = decisionTree_module.load_split_model()
 y_pred = model.predict(X_test)
 
 # Plot tree structure
-plt.figure(figsize=(13,9))
-tree.plot_tree(model, fontsize=9)
-plt.show()
+# plt.figure(figsize=(13,9))
+# tree.plot_tree(model, fontsize=9)
+# plt.show()
 
+score = cross_val_score(model, X_train, y_train, cv=5)
+print("CrossValScore: ", score)
+print("%0.2f accuracy with a standard deviation of %0.2f" % (score.mean(), score.std()))
 
-#decisionTree_module.accuracy_score(y_test, y_pred,actions)
+decisionTree_module.accuracy_score(y_test, y_pred,actions)
 
 
 ### Live webcam testing
-# num_rep = 8
+# num_rep = 5
+
 # tutte_le_rep = alzateLaterali_live_module.alzateLaterali_live(num_rep)
 # # calcolo features e conversione in dataframe
 # feature_rep = math_module.calculate_feature_alzateLaterali(tutte_le_rep)

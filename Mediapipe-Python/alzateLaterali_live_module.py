@@ -3,6 +3,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import math
+import time
 
 #nostri moduli
 import math_module
@@ -40,9 +41,14 @@ def alzateLaterali_live(num_rep):
 
 	cap = cv2.VideoCapture(0)
 
+	n_frame = 0
+
 	## Setup mediapipe instance
 	with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
 		while cap.isOpened():
+			start_time = time.time()
+			n_frame=n_frame+1
+
 			ret, frame = cap.read()
 
 			# Recolor image to RGB
@@ -212,6 +218,8 @@ def alzateLaterali_live(num_rep):
 
 			if cv2.waitKey(10) & 0xFF == ord("q"):
 				break
+
+			# print("--- n_frame: " + str(n_frame) + " --- " + "%s seconds ---" % (time.time() - start_time))
 
 		cap.release()
 		cv2.destroyAllWindows()

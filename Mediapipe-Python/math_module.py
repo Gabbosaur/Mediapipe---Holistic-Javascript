@@ -181,6 +181,7 @@ def braccia_tese_angolo(x):
 
 	return angolo_medio_gomito_destro,angolo_medio_gomito_sinistro
 
+# Ritorna la somma delle distanze tra un braccio e l'altro, più è basso il valore meglio è
 def mov_braccia_simmetrico(x):
 	distanzaX=0
 	distanzaY=0
@@ -195,7 +196,6 @@ def mov_braccia_simmetrico(x):
 		#print("x:"+str(distanzaX))
 		distanzaY=distanzaY+dist_Y
 		#print("y:"+str(distanzaY))
-
 	return distanzaX,distanzaY
 
 def angolo_massimo_spalla(x):
