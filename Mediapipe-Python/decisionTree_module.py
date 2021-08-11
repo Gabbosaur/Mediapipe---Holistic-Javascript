@@ -60,10 +60,8 @@ def accuracy_score(y_test, y_pred, actions):
 		col.append(actions[i])
 
 	mat.columns=col
-
 	mat.index=actions
 
-	print("error matrix")
 	print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori)+"\n")
 	print(mat)
 

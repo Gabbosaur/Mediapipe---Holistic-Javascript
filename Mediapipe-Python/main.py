@@ -27,12 +27,14 @@ from sklearn.metrics import accuracy_score as AS
 from sklearn import tree
 
 #nostri moduli
-import Tpose_module
-import annotateData_module
-import train_module
-import math_module
+import Tpose_module					# Heuristics live webcam
+import annotateData_module			# Annotate video and getting mediapipe structure data
+import math_module					# Calcolo features (angoli)
+import train_module					# LSTM
 import decisionTree_module
-import alzateLaterali_live_module
+import randomForest_module
+import alzateLaterali_live_module 	# Alzate Laterali - Live webcam with ML algos
+
 
 #Tpose_module.Tpose()
 
@@ -41,24 +43,23 @@ import alzateLaterali_live_module
 #annotateData_module.createAnnotation("alzateLaterali")
 sequences, labels, actions = annotateData_module.readAnnotation("alzateLaterali")
 
-print(len(sequences))
-#print(sequences)
-print(np.array(sequences[2]).shape) #(numero di frame(=numero di rilevazioni di mediapipe) , 33*4=132    33(numero di marker per mediapipe pose) * 4(x,y,z,visibility))
+#print(len(sequences)) #187
+##print(sequences)
+#print(np.array(sequences[2]).shape) #(numero di frame(=numero di rilevazioni di mediapipe) , 33*4=132    33(numero di marker per mediapipe pose) * 4(x,y,z,visibility))
 labels=np.array(labels)
-print(labels)
-print(type(labels))
-print("numero labels: "+str(len(labels)))
-
+#print(labels) #array di 0000011111112222223333
+#print(type(labels)) #ndarray
+#print("numero labels: "+str(len(labels))) #187
 
 
 X = np.array(sequences, dtype="object")
-print(X.shape)
-
-
+# print(X.shape)
 
 y = to_categorical(labels).astype(int)
 
 '''
+# # # LSTM # # #
+
 #model,X_train, X_test, y_train, y_test=train_module.train(X,y,actions)
 
 ###############################sotto commentato
@@ -95,10 +96,6 @@ feature_X = math_module.calculate_feature_alzateLaterali(X)
 X = decisionTree_module.conversione_dataset_al(feature_X)
 
 
-
-
-
-
 # Split dataset into training set and test set
 '''
 X_train, X_test, y_train, y_test = decisionTree_module.split(X,y)
@@ -120,7 +117,7 @@ X_train, X_test, y_train, y_test, model = decisionTree_module.load_split_model()
 #Predict the response for test dataset
 y_pred = model.predict(X_test)
 
-# Plot tree structure
+## Plot tree structure
 # plt.figure(figsize=(13,9))
 # tree.plot_tree(model, fontsize=9)
 # plt.show()
@@ -132,7 +129,19 @@ print("%0.2f accuracy with a standard deviation of %0.2f" % (score.mean(), score
 decisionTree_module.accuracy_score(y_test, y_pred,actions)
 
 
-### Live webcam testing
+
+
+##########################################				RANDOM FOREST
+
+scoreRF = randomForest_module.train_and_score(X_train, X_test, y_train, y_test)
+print("\n\nRandom Forest score: ", scoreRF) # ??? lo score cambia se non gli passo alcun random_state, se metto random_state=1 migliora a 0.91, se metto None o 0 è uguale al Decision Tree (?)
+
+
+
+
+
+
+##########################################				Live webcam testing
 # num_rep = 5
 
 # tutte_le_rep = alzateLaterali_live_module.alzateLaterali_live(num_rep)
