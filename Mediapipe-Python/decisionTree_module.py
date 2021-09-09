@@ -5,6 +5,7 @@ import optuna
 from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifier
 from sklearn.model_selection import train_test_split # Import train_test_split function
 from sklearn.metrics import accuracy_score as AS
+from sklearn.model_selection import cross_val_score
 import sklearn.metrics as metrics
 
 def conversione_dataset_al(x):
@@ -32,14 +33,17 @@ def load_split_model():
 	# load the model from disk
 	loaded_model = pickle.load(open('decision_tree.sav', 'rb'))
 
+	score = cross_val_score(loaded_model, X_train, y_train, cv=5)
+	# print("cross val score DT:" + str(score))
+
 	return X_train.to_numpy(), X_test.to_numpy(), y_train.to_numpy(), y_test.to_numpy(), loaded_model
 
 
 
 def accuracy_score(y_test, y_pred, actions):
-	print("\nPREDICTIONS\n")
+	# print("\nPREDICTIONS\n")
 	# Model Accuracy, how often is the classifier correct?
-	print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+	print("metrics.accuracy score DT:\t",metrics.accuracy_score(y_test, y_pred))
 
 	matrix = [[0 for x in range(len(actions))] for y in range(len(actions))]
 	errori=0
@@ -62,13 +66,13 @@ def accuracy_score(y_test, y_pred, actions):
 	mat.columns=col
 	mat.index=actions
 
-	print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori)+"\n")
-	print(mat)
+	# print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori)+"\n")
+	# print(mat)
 
 
 def train(X_train,y_train,best_params):
 	# Create Decision Tree classifer object
-	model = DecisionTreeClassifier(**best_params)
+	model = DecisionTreeClassifier(**best_params, random_state=0)
 
 	model.fit(X_train, y_train) # Training del modello con i dati
 

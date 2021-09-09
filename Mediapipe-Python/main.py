@@ -34,6 +34,7 @@ import train_module					# LSTM
 import decisionTree_module
 import randomForest_module
 import alzateLaterali_live_module 	# Alzate Laterali - Live webcam with ML algos
+import svm_module
 
 
 #Tpose_module.Tpose()
@@ -109,9 +110,8 @@ model=decisionTree_module.train(X_train,y_train,study.best_params)
 #oppure carica dati già splittati e modello trainato
 X_train, X_test, y_train, y_test, model = decisionTree_module.load_split_model()
 
-#study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
-#train
-#model=decisionTree_module.train(X_train, y_train,study.best_params)
+# study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
+# model=decisionTree_module.train(X_train, y_train,study.best_params)
 
 
 #Predict the response for test dataset
@@ -122,8 +122,11 @@ y_pred = model.predict(X_test)
 # tree.plot_tree(model, fontsize=9)
 # plt.show()
 
+print("-------- DECISION TREE --------")
+
 score = cross_val_score(model, X_train, y_train, cv=5)
-print("CrossValScore: ", score)
+print("cross val score DT:\t\t", score)
+print("cross val score DT mean:\t", score.mean())
 print("%0.2f accuracy with a standard deviation of %0.2f" % (score.mean(), score.std()))
 
 decisionTree_module.accuracy_score(y_test, y_pred,actions)
@@ -132,11 +135,20 @@ decisionTree_module.accuracy_score(y_test, y_pred,actions)
 
 
 ##########################################				RANDOM FOREST
-
+print("\n-------- RANDOM FOREST ---------")
 scoreRF = randomForest_module.train_and_score(X_train, X_test, y_train, y_test)
-print("\n\nRandom Forest score: ", scoreRF) # ??? lo score cambia se non gli passo alcun random_state, se metto random_state=1 migliora a 0.91, se metto None o 0 è uguale al Decision Tree (?)
+print("\nRandom Forest score:\t", scoreRF)
+# aggiornamento iniziale: lo score cambia se non gli passo alcun random_state, se metto random_state=1 migliora a 0.91, se metto None o 0 è uguale al Decision Tree (?)
+# aggiornamento 9/09/2021:	random_state = 3,42			--> score: 0.92982
+# 							random_state = 0			--> score: 0.91228
+#							random_state = 1,2			--> score: 0.89473
+#							random_state = None			--> score: random
 
 
+##########################################				SUPPORT VECTOR MACHINE
+print("\n-------- SVM ---------")
+scoreSVM = svm_module.train_and_score(X_train, X_test, y_train, y_test)
+print("\nSVM score:\t", scoreSVM)
 
 
 
