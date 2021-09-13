@@ -26,6 +26,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score as AS
 from sklearn import tree
 
+
 #nostri moduli
 import Tpose_module					# Heuristics live webcam
 import annotateData_module			# Annotate video and getting mediapipe structure data
@@ -35,6 +36,8 @@ import decisionTree_module
 import randomForest_module
 import alzateLaterali_live_module 	# Alzate Laterali - Live webcam with ML algos
 import svm_module
+import gradientBoosting_module
+import xgboost_module
 
 
 #Tpose_module.Tpose()
@@ -129,28 +132,44 @@ print("cross val score DT:\t\t", score)
 print("cross val score DT mean:\t", score.mean())
 print("%0.2f accuracy with a standard deviation of %0.2f" % (score.mean(), score.std()))
 
-decisionTree_module.accuracy_score(y_test, y_pred,actions)
+math_module.confusionMatrix(y_test, y_pred, actions)
 
 
 
 
 ##########################################				RANDOM FOREST
 print("\n-------- RANDOM FOREST ---------")
-scoreRF = randomForest_module.train_and_score(X_train, X_test, y_train, y_test)
-print("\nRandom Forest score:\t", scoreRF)
+y_pred_RF = randomForest_module.train_and_score(X_train, X_test, y_train, y_test)
+
 # aggiornamento iniziale: lo score cambia se non gli passo alcun random_state, se metto random_state=1 migliora a 0.91, se metto None o 0 è uguale al Decision Tree (?)
 # aggiornamento 9/09/2021:	random_state = 3,42			--> score: 0.92982
 # 							random_state = 0			--> score: 0.91228
 #							random_state = 1,2			--> score: 0.89473
 #							random_state = None			--> score: random
 
+math_module.confusionMatrix(y_test, y_pred_RF, actions)
 
 ##########################################				SUPPORT VECTOR MACHINE
 print("\n-------- SVM ---------")
-scoreSVM = svm_module.train_and_score(X_train, X_test, y_train, y_test)
-print("\nSVM score:\t", scoreSVM)
+y_pred_SVM = svm_module.train_and_score(X_train, X_test, y_train, y_test)
+
+# aggiornamento iniziale: 	random state = 0,1,2,42		--> score: 0.43859
+
+math_module.confusionMatrix(y_test, y_pred_SVM, actions)
+
+##########################################				GRADIENT BOOSTING
+print("\n-------- GRADIENT BOOSTING --------")
+y_pred_GB = gradientBoosting_module.train_and_score(X_train, X_test, y_train, y_test)
+
+math_module.confusionMatrix(y_test, y_pred_GB, actions)
 
 
+
+##########################################				EXTREME GRADIENT BOOSTING
+print("\n-------- EXTREME GRADIENT BOOSTING --------")
+y_pred_XGB = xgboost_module.train_and_score(X_train, X_test, y_train, y_test)
+
+math_module.confusionMatrix(y_test, y_pred_XGB, actions)
 
 
 ##########################################				Live webcam testing

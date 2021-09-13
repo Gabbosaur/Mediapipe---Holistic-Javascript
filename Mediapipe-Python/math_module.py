@@ -1,6 +1,8 @@
 import numpy as np
 import math
 from matplotlib import pyplot as plt
+import sklearn.metrics as metrics
+import pandas as pd
 
 #x_schiena=[]
 #y_schiena=[]
@@ -314,3 +316,57 @@ def calculate_feature_alzateLaterali(X):
 		list_feature_X.append([coeff_schiena,coeff_braccia,coeff_angolo_medio_braccio_destro,coeff_angolo_medio_braccio_sinistro,coeff_simm_x,coeff_simm_y,angolo_spalla_destra,angolo_spalla_sinistra])
 	
 	return np.array(list_feature_X)
+
+
+def confusionMatrix(y_test, y_pred, actions):
+	print("\nCONFUSION MATRIX\n")
+	# Model Accuracy, how often is the classifier correct?
+	print("metrics.accuracy score:\t",metrics.accuracy_score(y_test, y_pred))
+
+	matrix = [[0 for x in range(len(actions))] for y in range(len(actions))]
+	errori=0
+	for i in range(0,len(y_test)):
+		if(np.argmax(y_pred[i]) != np.argmax(y_test[i])):
+			matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])]=matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])] + 1
+			errori=errori+1
+		#print("valore predetto per campione "+ str(i)+ ": "+str(actions[np.argmax(y_pred[i])])) #prediction
+		#print("valore effettivo per campione "+ str(i)+ ": "+str(actions[np.argmax(y_test[i])])+"\n") #valore effettivo
+		else:
+			matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])]=matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])] + 1
+
+	mat=pd.DataFrame(np.row_stack(matrix))
+	col=[]
+	for i in range(len(actions)):
+		col.append(actions[i])
+
+	mat.columns=col
+	mat.index=actions
+
+	print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori)+"\n")
+	print(mat)
+
+
+
+def oneHot_to_1D(y):
+
+	y_final = []
+	for i in range(0,len(y)):
+		for j in range(0, 4):
+			if y[i,j] == 1:
+				y_final.append(j)
+				break
+
+	return y_final
+
+def oneD_to_oneHot(y):
+	y_final = []
+	for i in range(0,len(y)):
+		if y[i] == 0:
+			y_final.append([1,0,0,0])
+		elif y[i] == 1:
+			y_final.append([0,1,0,0])
+		elif y[i] == 2:
+			y_final.append([0,0,1,0])
+		else:
+			y_final.append([0,0,0,1])
+	return y_final
