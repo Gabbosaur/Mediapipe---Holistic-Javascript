@@ -8,7 +8,7 @@ def train_and_score(X_train, X_test, y_train, y_test):
     y_train_new = mm.oneHot_to_1D(y_train)
     y_test_new = mm.oneHot_to_1D(y_test)
 
-    clf = XGBClassifier()
+    clf = XGBClassifier(use_label_encoder=False, eval_metric = 'mlogloss')
     clf.fit(X=X_train, y=y_train_new)
     y_pred = clf.predict(X_test)
     score = clf.score(X_test,y_test_new) # testing accuracy

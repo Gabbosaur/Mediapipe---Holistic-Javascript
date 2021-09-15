@@ -40,6 +40,10 @@ import gradientBoosting_module
 import xgboost_module
 
 
+# dimensioni finestra terminale
+#cmd = 'mode 500,500'
+#os.system(cmd)
+
 #Tpose_module.Tpose()
 
 #crea i video e i file pkl annotati dai file mp4 presenti nelle sottocartelle di alzateLaterali
