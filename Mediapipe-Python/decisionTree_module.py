@@ -8,6 +8,7 @@ from sklearn.metrics import accuracy_score as AS
 from sklearn.model_selection import cross_val_score
 import sklearn.metrics as metrics
 
+
 def conversione_dataset_al(x):
 	X=pd.DataFrame(np.row_stack(x))
 	X.columns=["coeff_schiena", "coeff_braccia", "coeff_angolo_medio_braccio_destro", "coeff_angolo_medio_braccio_sinistro", "coeff_simm_x", "coeff_simm_y", "angolo_spalla_destra", "angolo_spalla_sinistra"]
@@ -40,6 +41,22 @@ def load_split_model():
 
 
 
+def train_and_score(X_train, X_test, y_train, y_test):
+
+    clf = DecisionTreeClassifier(random_state=0) # random_state da fissare perché se no cambia valori ogni tot volte
+    clf.fit(X=X_train, y=y_train)
+    y_pred = clf.predict(X_test)
+    score = clf.score(X_test,y_test) # testing accuracy
+
+    ac_score = metrics.accuracy_score(y_test, y_pred)
+    print("\nDecision Tree score:\t", score)
+    print("metrics.accuracy score DT:\t"+ str(ac_score))
+
+    cross_score = cross_val_score(clf, X_train, y_train, cv=5) # training accuracy
+    print("cross val score DT:\t\t" + str(cross_score)) # array di 5 elementi
+    print("cross val score DT mean:\t" + str(cross_score.mean()))
+
+    return y_pred # testing accuracy
 
 
 def train(X_train,y_train,best_params):
@@ -58,9 +75,9 @@ def train(X_train,y_train,best_params):
 def findBestHyperparameters(X_train, y_train, X_test, y_test):
 	def objective(trial):
 		dtc_params = dict(
-			max_depth = trial.suggest_int("max_depth", 2, 10),
-			min_samples_split = trial.suggest_int("min_samples_split", 2, 10),
-			max_leaf_nodes = int(trial.suggest_int("max_leaf_nodes", 2, 10)),
+			max_depth = trial.suggest_int("max_depth", 2, 100),
+			min_samples_split = trial.suggest_int("min_samples_split", 2, 100),
+			max_leaf_nodes = int(trial.suggest_int("max_leaf_nodes", 2, 100)),
 			criterion = trial.suggest_categorical("criterion", ["gini", "entropy"]),
 		)
 		DTC = DecisionTreeClassifier(**dtc_params) # DTC con i range di parametri dati

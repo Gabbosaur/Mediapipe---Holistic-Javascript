@@ -25,6 +25,7 @@ from sklearn.model_selection import train_test_split # Import train_test_split f
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score as AS
 from sklearn import tree
+import sklearn
 
 
 #nostri moduli
@@ -38,6 +39,7 @@ import alzateLaterali_live_module 	# Alzate Laterali - Live webcam with ML algos
 import svm_module
 import gradientBoosting_module
 import xgboost_module
+
 
 
 # dimensioni finestra terminale
@@ -103,6 +105,7 @@ feature_X = math_module.calculate_feature_alzateLaterali(X)
 
 X = decisionTree_module.conversione_dataset_al(feature_X)
 
+print("-------- DECISION TREE --------")
 
 # Split dataset into training set and test set
 '''
@@ -117,32 +120,40 @@ model=decisionTree_module.train(X_train,y_train,study.best_params)
 #oppure carica dati già splittati e modello trainato
 X_train, X_test, y_train, y_test, model = decisionTree_module.load_split_model()
 
+print("Normal training: ")
+y_pred_DT = decisionTree_module.train_and_score(X_train, X_test, y_train, y_test)
+math_module.confusionMatrix(y_test, y_pred_DT, actions)
+
+
+print("Best HP training: ")
 # study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
 # model=decisionTree_module.train(X_train, y_train,study.best_params)
-
-
 #Predict the response for test dataset
 y_pred = model.predict(X_test)
+math_module.confusionMatrix(y_test, y_pred, actions)
+
 
 ## Plot tree structure
 # plt.figure(figsize=(13,9))
 # tree.plot_tree(model, fontsize=9)
 # plt.show()
 
-print("-------- DECISION TREE --------")
 
-score = cross_val_score(model, X_train, y_train, cv=5)
-print("cross val score DT:\t\t", score)
-print("cross val score DT mean:\t", score.mean())
-print("%0.2f accuracy with a standard deviation of %0.2f" % (score.mean(), score.std()))
 
-math_module.confusionMatrix(y_test, y_pred, actions)
+
+# score = cross_val_score(model, X_train, y_train, cv=5)
+# print("cross val score DT:\t\t", score)
+# print("cross val score DT mean:\t", score.mean())
+# print("%0.2f accuracy with a standard deviation of %0.2f" % (score.mean(), score.std()))
+
+
 
 
 
 
 ##########################################				RANDOM FOREST
 print("\n-------- RANDOM FOREST ---------")
+print("\nNormal training: ")
 y_pred_RF = randomForest_module.train_and_score(X_train, X_test, y_train, y_test)
 
 # aggiornamento iniziale: lo score cambia se non gli passo alcun random_state, se metto random_state=1 migliora a 0.91, se metto None o 0 è uguale al Decision Tree (?)
@@ -152,6 +163,19 @@ y_pred_RF = randomForest_module.train_and_score(X_train, X_test, y_train, y_test
 #							random_state = None			--> score: random
 
 math_module.confusionMatrix(y_test, y_pred_RF, actions)
+
+# Finding best HYPERPARAMETERS + Training
+print("\nBest HP training: ")
+study=randomForest_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
+model=randomForest_module.train(X_train,y_train,study.best_params)
+y_pred = model.predict(X_test)
+
+math_module.confusionMatrix(y_test, y_pred, actions)
+
+
+
+
+'''
 
 ##########################################				SUPPORT VECTOR MACHINE
 print("\n-------- SVM ---------")
@@ -188,6 +212,10 @@ math_module.confusionMatrix(y_test, y_pred_XGB, actions)
 
 # for i in range(0,len(prediction)):
 # 	print("valore predetto per campione "+ str(i)+ ": "+str(actions[np.argmax(prediction[i])])) #prediction
+'''
+
+
+
 
 
 '''
