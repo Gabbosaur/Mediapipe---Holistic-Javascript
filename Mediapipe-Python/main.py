@@ -144,7 +144,7 @@ math_module.confusionMatrix(y_test, y_pred, actions)
 # score = cross_val_score(model, X_train, y_train, cv=5)
 # print("cross val score DT:\t\t", score)
 # print("cross val score DT mean:\t", score.mean())
-# print("%0.2f accuracy with a standard deviation of %0.2f" % (score.mean(), score.std()))
+
 
 
 
@@ -166,7 +166,7 @@ math_module.confusionMatrix(y_test, y_pred_RF, actions)
 
 # Finding best HYPERPARAMETERS + Training
 print("\nBest HP training: ")
-study=randomForest_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
+study=randomForest_module.findBestHyperparameters(X_train, y_train)
 model=randomForest_module.train(X_train,y_train,study.best_params)
 y_pred = model.predict(X_test)
 

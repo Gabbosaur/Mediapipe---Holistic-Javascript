@@ -1,6 +1,7 @@
 import numpy as np
 import math
 from matplotlib import pyplot as plt
+from sklearn.metrics import confusion_matrix
 import sklearn.metrics as metrics
 import pandas as pd
 
@@ -320,8 +321,13 @@ def calculate_feature_alzateLaterali(X):
 
 def confusionMatrix(y_test, y_pred, actions):
 	print("\nCONFUSION MATRIX\n")
+
+	# print(y_pred)
+	# print(y_pred.argmax(axis=1))
+	
 	# Model Accuracy, how often is the classifier correct?
-	print("metrics.accuracy score:\t",metrics.accuracy_score(y_test, y_pred))
+	# print("metrics.accuracy score 1D (non tiene conto dei null):\t",metrics.accuracy_score(y_test.argmax(axis=1), y_pred.argmax(axis=1)))
+	print("metrics.accuracy score normale (considera i null sbagliati):\t",metrics.accuracy_score(y_test, y_pred))
 
 	matrix = [[0 for x in range(len(actions))] for y in range(len(actions))]
 	errori=0
@@ -344,6 +350,10 @@ def confusionMatrix(y_test, y_pred, actions):
 
 	print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori)+"\n")
 	print(mat)
+
+	print("\nmetrics.confusion_matrix")
+	print(confusion_matrix(y_test.argmax(axis=1), y_pred.argmax(axis=1)))
+
 
 
 
