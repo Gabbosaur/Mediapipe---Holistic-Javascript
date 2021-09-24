@@ -352,7 +352,7 @@ def confusionMatrix(y_test, y_pred, actions):
 	print(mat)
 
 	print("\nmetrics.confusion_matrix")
-	print(confusion_matrix(y_test.argmax(axis=1), y_pred.argmax(axis=1)))
+	# print(confusion_matrix(y_test.argmax(axis=1), y_pred.argmax(axis=1)))
 
 
 

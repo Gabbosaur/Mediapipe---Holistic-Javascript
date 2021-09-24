@@ -125,12 +125,12 @@ y_pred_DT = decisionTree_module.train_and_score(X_train, X_test, y_train, y_test
 math_module.confusionMatrix(y_test, y_pred_DT, actions)
 
 
-print("Best HP training: ")
+print("Best HP training: ")				# ----------------------------------------- scommentare per optuna -------
 # study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
 # model=decisionTree_module.train(X_train, y_train,study.best_params)
 #Predict the response for test dataset
-y_pred = model.predict(X_test)
-math_module.confusionMatrix(y_test, y_pred, actions)
+# y_pred = model.predict(X_test)
+# math_module.confusionMatrix(y_test, y_pred, actions)
 
 
 ## Plot tree structure
@@ -139,14 +139,9 @@ math_module.confusionMatrix(y_test, y_pred, actions)
 # plt.show()
 
 
-
-
 # score = cross_val_score(model, X_train, y_train, cv=5)
 # print("cross val score DT:\t\t", score)
 # print("cross val score DT mean:\t", score.mean())
-
-
-
 
 
 
@@ -165,39 +160,48 @@ y_pred_RF = randomForest_module.train_and_score(X_train, X_test, y_train, y_test
 math_module.confusionMatrix(y_test, y_pred_RF, actions)
 
 # Finding best HYPERPARAMETERS + Training
-print("\nBest HP training: ")
-study=randomForest_module.findBestHyperparameters(X_train, y_train)
-model=randomForest_module.train(X_train,y_train,study.best_params)
-y_pred = model.predict(X_test)
+# print("\nBest HP training: ")		# ----------------------------------------- scommentare per optuna -------
+# study=randomForest_module.findBestHyperparameters(X_train, y_train)
+# model=randomForest_module.train(X_train,y_train,study.best_params)
+# y_pred = model.predict(X_test)
 
-math_module.confusionMatrix(y_test, y_pred, actions)
-
-
+# math_module.confusionMatrix(y_test, y_pred, actions)
 
 
-'''
 
-##########################################				SUPPORT VECTOR MACHINE
-print("\n-------- SVM ---------")
-y_pred_SVM = svm_module.train_and_score(X_train, X_test, y_train, y_test)
 
-# aggiornamento iniziale: 	random state = 0,1,2,42		--> score: 0.43859
 
-math_module.confusionMatrix(y_test, y_pred_SVM, actions)
 
-##########################################				GRADIENT BOOSTING
-print("\n-------- GRADIENT BOOSTING --------")
-y_pred_GB = gradientBoosting_module.train_and_score(X_train, X_test, y_train, y_test)
+# ##########################################				SUPPORT VECTOR MACHINE
+# print("\n-------- SVM ---------")
+# y_pred_SVM = svm_module.train_and_score(X_train, X_test, y_train, y_test)
 
-math_module.confusionMatrix(y_test, y_pred_GB, actions)
+# # aggiornamento iniziale: 	random state = 0,1,2,42		--> score: 0.43859
+
+# math_module.confusionMatrix(y_test, y_pred_SVM, actions)
+
+# ##########################################				GRADIENT BOOSTING
+# print("\n-------- GRADIENT BOOSTING --------")
+# y_pred_GB = gradientBoosting_module.train_and_score(X_train, X_test, y_train, y_test)
+
+# math_module.confusionMatrix(y_test, y_pred_GB, actions)
 
 
 
 ##########################################				EXTREME GRADIENT BOOSTING
 print("\n-------- EXTREME GRADIENT BOOSTING --------")
+print("Normal training: ")
 y_pred_XGB = xgboost_module.train_and_score(X_train, X_test, y_train, y_test)
-
 math_module.confusionMatrix(y_test, y_pred_XGB, actions)
+
+
+print("Best HP training: ")
+study=xgboost_module.findBestHyperparameters(X_train, y_train)
+model=xgboost_module.train(X_train, y_train,study.best_params)
+y_pred = model.predict(X_test)
+print(y_pred)
+print("\n\n ^ y_pred")
+math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
 ##########################################				Live webcam testing
@@ -212,7 +216,7 @@ math_module.confusionMatrix(y_test, y_pred_XGB, actions)
 
 # for i in range(0,len(prediction)):
 # 	print("valore predetto per campione "+ str(i)+ ": "+str(actions[np.argmax(prediction[i])])) #prediction
-'''
+
 
 
 

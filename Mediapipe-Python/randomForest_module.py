@@ -66,7 +66,6 @@ def train(X_train,y_train,best_params):
 
 
 def findBestHyperparameters(X_train, y_train):
-	actions = ["alzateLaterali0", "alzateLaterali1", "alzateLaterali2", "alzateLaterali3"]
 	def objective(trial):
 		dtc_params = dict(
 			max_depth = trial.suggest_int("max_depth", 2, 30),
