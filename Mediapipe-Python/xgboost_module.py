@@ -22,7 +22,7 @@ def train_and_score(X_train, X_test, y_train, y_test):
 	cross_score = cross_val_score(clf, X_train, y_train_new, cv=5) # training accuracy
 	print("cross val score XGBoost:\t\t" + str(cross_score)) # array di 5 elementi
 	print("cross val score XGBoost mean:\t" + str(cross_score.mean()))
-	# print("%f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+	print("%f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
 
 	y_pred = mm.oneD_to_oneHot(y_pred)
 

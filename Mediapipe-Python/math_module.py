@@ -327,18 +327,25 @@ def confusionMatrix(y_test, y_pred, actions):
 	
 	# Model Accuracy, how often is the classifier correct?
 	# print("metrics.accuracy score 1D (non tiene conto dei null):\t",metrics.accuracy_score(y_test.argmax(axis=1), y_pred.argmax(axis=1)))
-	print("metrics.accuracy score normale (considera i null sbagliati):\t",metrics.accuracy_score(y_test, y_pred))
+	print("metrics.accuracy score normale (considera i null sbagliati) - Testing score:\t",metrics.accuracy_score(y_test, y_pred))
 
 	matrix = [[0 for x in range(len(actions))] for y in range(len(actions))]
-	errori=0
+	errori = 0
+	predNull = 0
 	for i in range(0,len(y_test)):
-		if(np.argmax(y_pred[i]) != np.argmax(y_test[i])):
-			matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])]=matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])] + 1
-			errori=errori+1
-		#print("valore predetto per campione "+ str(i)+ ": "+str(actions[np.argmax(y_pred[i])])) #prediction
-		#print("valore effettivo per campione "+ str(i)+ ": "+str(actions[np.argmax(y_test[i])])+"\n") #valore effettivo
+		if 1 in y_pred[i]:
+			if(np.argmax(y_pred[i]) != np.argmax(y_test[i])):
+				matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])]=matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])] + 1
+				errori=errori+1
+			#print("valore predetto per campione "+ str(i)+ ": "+str(actions[np.argmax(y_pred[i])])) #prediction
+			#print("valore effettivo per campione "+ str(i)+ ": "+str(actions[np.argmax(y_test[i])])+"\n") #valore effettivo
+			else:
+				matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])]=matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])] + 1
 		else:
-			matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])]=matrix[np.argmax(y_test[i])][np.argmax(y_pred[i])] + 1
+			errori+=1
+			predNull+=1
+
+	
 
 	mat=pd.DataFrame(np.row_stack(matrix))
 	col=[]
@@ -348,10 +355,10 @@ def confusionMatrix(y_test, y_pred, actions):
 	mat.columns=col
 	mat.index=actions
 
-	print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori)+"\n")
+	print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori) + "   campioni classificati nulli: " + str(predNull) + "\n")
 	print(mat)
 
-	print("\nmetrics.confusion_matrix")
+	# print("\nmetrics.confusion_matrix")
 	# print(confusion_matrix(y_test.argmax(axis=1), y_pred.argmax(axis=1)))
 
 

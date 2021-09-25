@@ -125,7 +125,7 @@ y_pred_DT = decisionTree_module.train_and_score(X_train, X_test, y_train, y_test
 math_module.confusionMatrix(y_test, y_pred_DT, actions)
 
 
-print("Best HP training: ")				# ----------------------------------------- scommentare per optuna -------
+# print("Best HP training: ")				# ----------------------------------------- scommentare per optuna -------
 # study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
 # model=decisionTree_module.train(X_train, y_train,study.best_params)
 #Predict the response for test dataset
@@ -173,35 +173,51 @@ math_module.confusionMatrix(y_test, y_pred_RF, actions)
 
 
 # ##########################################				SUPPORT VECTOR MACHINE
-# print("\n-------- SVM ---------")
-# y_pred_SVM = svm_module.train_and_score(X_train, X_test, y_train, y_test)
+print("\n-------- SVM ---------")
+y_pred_SVM = svm_module.train_and_score(X_train, X_test, y_train, y_test)
 
-# # aggiornamento iniziale: 	random state = 0,1,2,42		--> score: 0.43859
+# aggiornamento iniziale: 	random state = 0,1,2,42		--> score: 0.43859
 
-# math_module.confusionMatrix(y_test, y_pred_SVM, actions)
+math_module.confusionMatrix(y_test, y_pred_SVM, actions)
+
+# print("Best HP training: ")
+# study=svm_module.findBestHyperparameters(X_train, y_train)
+# model=svm_module.train(X_train, y_train,study.best_params)
+# y_pred = model.predict(X_test)
+
+# math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
+
 
 # ##########################################				GRADIENT BOOSTING
-# print("\n-------- GRADIENT BOOSTING --------")
-# y_pred_GB = gradientBoosting_module.train_and_score(X_train, X_test, y_train, y_test)
+print("\n-------- GRADIENT BOOSTING --------")
+y_pred_GB = gradientBoosting_module.train_and_score(X_train, X_test, y_train, y_test)
 
-# math_module.confusionMatrix(y_test, y_pred_GB, actions)
+math_module.confusionMatrix(y_test, y_pred_GB, actions)
 
+
+print("Best HP training: ")
+study=gradientBoosting_module.findBestHyperparameters(X_train, y_train)
+model=gradientBoosting_module.train(X_train, y_train,study.best_params)
+y_pred = model.predict(X_test)
+
+math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
 ##########################################				EXTREME GRADIENT BOOSTING
 print("\n-------- EXTREME GRADIENT BOOSTING --------")
 print("Normal training: ")
 y_pred_XGB = xgboost_module.train_and_score(X_train, X_test, y_train, y_test)
+
 math_module.confusionMatrix(y_test, y_pred_XGB, actions)
 
-
-print("Best HP training: ")
-study=xgboost_module.findBestHyperparameters(X_train, y_train)
-model=xgboost_module.train(X_train, y_train,study.best_params)
-y_pred = model.predict(X_test)
-print(y_pred)
-print("\n\n ^ y_pred")
-math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
+## ----------------------------------------------------- scommentare per optuna
+# print("Best HP training: ")
+# study=xgboost_module.findBestHyperparameters(X_train, y_train)
+# model=xgboost_module.train(X_train, y_train,study.best_params)
+# y_pred = model.predict(X_test)
+# print(y_pred)
+# print("\n\n ^ y_pred")
+# math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
 ##########################################				Live webcam testing
