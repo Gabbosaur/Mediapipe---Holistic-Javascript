@@ -118,7 +118,9 @@ model=decisionTree_module.train(X_train,y_train,study.best_params)
 '''
 
 #oppure carica dati già splittati e modello trainato
-X_train, X_test, y_train, y_test, model = math_module.load_split_model()
+#X_train, X_test, y_train, y_test,model  = math_module.load_split_model('decision_tree.sav')
+X_train, X_test, y_train, y_test  = math_module.load_split_model()
+model=math_module.load_model('decision_tree.sav')
 
 print("Normal training: ")
 y_pred_DT = decisionTree_module.train_and_score(X_train, X_test, y_train, y_test)
@@ -144,7 +146,14 @@ math_module.confusionMatrix(y_test, y_pred_DT, actions)
 # print("cross val score DT:\t\t", score)
 # print("cross val score DT mean:\t", score.mean())
 
-
+######################carico miglior modello
+print("\n\nBest HP training: \n")
+best_model_decisionTree=math_module.load_model('decision_tree.sav')
+cross_score = cross_val_score(best_model_decisionTree, X_train, y_train, cv=5)
+print("best score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+# Predict the response for test dataset
+y_pred = best_model_decisionTree.predict(X_test)
+math_module.confusionMatrix(y_test, y_pred, actions)
 
 
 ##########################################				RANDOM FOREST
@@ -171,7 +180,14 @@ math_module.confusionMatrix(y_test, y_pred_RF, actions)
 # math_module.confusionMatrix(y_test, y_pred, actions)
 
 
-
+######################carico miglior modello
+print("\n\nBest HP training: \n")
+best_model_random_forest=math_module.load_model('random_forest.sav')
+cross_score = cross_val_score(best_model_random_forest, X_train, y_train, cv=5)
+print("best score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+# Predict the response for test dataset
+y_pred = best_model_random_forest.predict(X_test)
+math_module.confusionMatrix(y_test, y_pred, actions)
 
 
 
@@ -183,7 +199,7 @@ y_pred_SVM = svm_module.train_and_score(X_train, X_test, y_train, y_test)
 
 math_module.confusionMatrix(y_test, y_pred_SVM, actions)
 
-print("Best HP training: ")
+# print("Best HP training: ")
 # Final cross val score: 0.9923076923076923, sd: 0.015385
 # study=svm_module.findBestHyperparameters(X_train, y_train)
 # model=svm_module.train(X_train, y_train,study.best_params)
@@ -191,6 +207,15 @@ print("Best HP training: ")
 
 # math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
+
+######################carico miglior modello
+print("\n\nBest HP training: \n")
+best_model_SVM=math_module.load_model('svm.sav')
+cross_score = cross_val_score(best_model_SVM, X_train, math_module.oneHot_to_1D(y_train), cv=5)
+print("best score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+# Predict the response for test dataset
+y_pred = best_model_SVM.predict(X_test)
+math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 # ##########################################				GRADIENT BOOSTING
 print("\n-------- GRADIENT BOOSTING --------")
@@ -205,6 +230,15 @@ math_module.confusionMatrix(y_test, y_pred_GB, actions)
 # y_pred = model.predict(X_test)
 
 # math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
+
+######################carico miglior modello
+print("\n\nBest HP training: \n")
+best_model_gradient_boosting=math_module.load_model('gradient_boosting.sav')
+cross_score = cross_val_score(best_model_gradient_boosting, X_train, math_module.oneHot_to_1D(y_train), cv=5)
+print("best score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+# Predict the response for test dataset
+y_pred = best_model_gradient_boosting.predict(X_test)
+math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
 ##########################################				EXTREME GRADIENT BOOSTING
@@ -222,6 +256,20 @@ math_module.confusionMatrix(y_test, y_pred_XGB, actions)
 # print(y_pred)
 # print("\n\n ^ y_pred")
 # math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
+
+
+######################carico miglior modello
+print("\n\nBest HP training: \n")
+best_model_XGB=math_module.load_model('xgboost.sav')
+cross_score = cross_val_score(best_model_XGB, X_train, math_module.oneHot_to_1D(y_train), cv=5)
+print("best score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+# Predict the response for test dataset
+y_pred = best_model_XGB.predict(X_test)
+math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
+
+
+
+
 
 
 ##########################################				Live webcam testing

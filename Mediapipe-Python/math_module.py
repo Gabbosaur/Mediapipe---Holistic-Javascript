@@ -407,7 +407,13 @@ def split(X,y):
 
 	return X_train, X_test, y_train, y_test
 
-def load_split_model():
+def load_model(mod_file):
+	# load the model from disk
+	#loaded_model = pickle.load(open('decision_tree.sav', 'rb'))
+	loaded_model = pickle.load(open(mod_file, 'rb'))
+	return loaded_model
+
+def load_split_model(mod_file=None):
 	X_train = pd.read_csv('X_train_dec_tree.csv')
 	X_test=pd.read_csv('X_test_dec_tree.csv')
 	y_train=pd.read_csv('y_train_dec_tree.csv')
@@ -415,9 +421,11 @@ def load_split_model():
 
 
 	# load the model from disk
-	loaded_model = pickle.load(open('decision_tree.sav', 'rb'))
+	#loaded_model = pickle.load(open('decision_tree.sav', 'rb'))
+	
+	#loaded_model=load_model(mod_file)
 
-	score = cross_val_score(loaded_model, X_train, y_train, cv=5)
+	#score = cross_val_score(loaded_model, X_train, y_train, cv=5)
 	# print("cross val score DT:" + str(score))
 
-	return X_train.to_numpy(), X_test.to_numpy(), y_train.to_numpy(), y_test.to_numpy(), loaded_model
+	return X_train.to_numpy(), X_test.to_numpy(), y_train.to_numpy(), y_test.to_numpy()#, loaded_model
