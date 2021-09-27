@@ -103,13 +103,13 @@ train_module.test(X_test,y_test,model,actions)
 
 feature_X = math_module.calculate_feature_alzateLaterali(X)
 
-X = decisionTree_module.conversione_dataset_al(feature_X)
+X = math_module.conversione_dataset_al(feature_X)
 
 print("-------- DECISION TREE --------")
 
 # Split dataset into training set and test set
 '''
-X_train, X_test, y_train, y_test = decisionTree_module.split(X,y)
+X_train, X_test, y_train, y_test = math_module.split(X,y)
 
 
 study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
@@ -118,19 +118,19 @@ model=decisionTree_module.train(X_train,y_train,study.best_params)
 '''
 
 #oppure carica dati già splittati e modello trainato
-X_train, X_test, y_train, y_test, model = decisionTree_module.load_split_model()
+X_train, X_test, y_train, y_test, model = math_module.load_split_model()
 
 print("Normal training: ")
 y_pred_DT = decisionTree_module.train_and_score(X_train, X_test, y_train, y_test)
 math_module.confusionMatrix(y_test, y_pred_DT, actions)
 
 
-# print("Best HP training: ")				# ----------------------------------------- scommentare per optuna -------
-# study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
-# model=decisionTree_module.train(X_train, y_train,study.best_params)
-#Predict the response for test dataset
-# y_pred = model.predict(X_test)
-# math_module.confusionMatrix(y_test, y_pred, actions)
+print("Best HP training: ")				# ----------------------------------------- scommentare per optuna -------
+study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
+model=decisionTree_module.train(X_train, y_train,study.best_params)
+# Predict the response for test dataset
+y_pred = model.predict(X_test)
+math_module.confusionMatrix(y_test, y_pred, actions)
 
 
 ## Plot tree structure
@@ -195,12 +195,12 @@ y_pred_GB = gradientBoosting_module.train_and_score(X_train, X_test, y_train, y_
 math_module.confusionMatrix(y_test, y_pred_GB, actions)
 
 
-print("Best HP training: ")
-study=gradientBoosting_module.findBestHyperparameters(X_train, y_train)
-model=gradientBoosting_module.train(X_train, y_train,study.best_params)
-y_pred = model.predict(X_test)
+# print("Best HP training: ")
+# study=gradientBoosting_module.findBestHyperparameters(X_train, y_train)
+# model=gradientBoosting_module.train(X_train, y_train,study.best_params)
+# y_pred = model.predict(X_test)
 
-math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
+# math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
 ##########################################				EXTREME GRADIENT BOOSTING
