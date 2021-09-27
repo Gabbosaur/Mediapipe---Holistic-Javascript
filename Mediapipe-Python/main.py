@@ -125,12 +125,13 @@ y_pred_DT = decisionTree_module.train_and_score(X_train, X_test, y_train, y_test
 math_module.confusionMatrix(y_test, y_pred_DT, actions)
 
 
-print("Best HP training: ")				# ----------------------------------------- scommentare per optuna -------
-study=decisionTree_module.findBestHyperparameters(X_train, y_train)
-model=decisionTree_module.train(X_train, y_train,study.best_params)
-# Predict the response for test dataset
-y_pred = model.predict(X_test)
-math_module.confusionMatrix(y_test, y_pred, actions)
+# print("Best HP training: ")				# ----------------------------------------- scommentare per optuna -------
+# # Final cross val score: 0.9443
+# study=decisionTree_module.findBestHyperparameters(X_train, y_train)
+# model=decisionTree_module.train(X_train, y_train,study.best_params)
+# # Predict the response for test dataset
+# y_pred = model.predict(X_test)
+# math_module.confusionMatrix(y_test, y_pred, actions)
 
 
 ## Plot tree structure
@@ -152,7 +153,7 @@ print("\nNormal training: ")
 y_pred_RF = randomForest_module.train_and_score(X_train, X_test, y_train, y_test)
 
 # aggiornamento iniziale: lo score cambia se non gli passo alcun random_state, se metto random_state=1 migliora a 0.91, se metto None o 0 è uguale al Decision Tree (?)
-# aggiornamento 9/09/2021:	random_state = 3,42			--> score: 0.92982
+# aggiornamento 9/09/2021:	random_state = 3,42			--> score: 0.92982		<- accuracy score, non crossvalscore
 # 							random_state = 0			--> score: 0.91228
 #							random_state = 1,2			--> score: 0.89473
 #							random_state = None			--> score: random
@@ -161,6 +162,8 @@ math_module.confusionMatrix(y_test, y_pred_RF, actions)
 
 # Finding best HYPERPARAMETERS + Training
 # print("\nBest HP training: ")		# ----------------------------------------- scommentare per optuna -------
+# # Final cross val score: 0.9692307692307693, sd: 0.028782
+
 # study=randomForest_module.findBestHyperparameters(X_train, y_train)
 # model=randomForest_module.train(X_train,y_train,study.best_params)
 # y_pred = model.predict(X_test)
@@ -180,7 +183,8 @@ y_pred_SVM = svm_module.train_and_score(X_train, X_test, y_train, y_test)
 
 math_module.confusionMatrix(y_test, y_pred_SVM, actions)
 
-# print("Best HP training: ")
+print("Best HP training: ")
+# Final cross val score: 0.9923076923076923, sd: 0.015385
 # study=svm_module.findBestHyperparameters(X_train, y_train)
 # model=svm_module.train(X_train, y_train,study.best_params)
 # y_pred = model.predict(X_test)
