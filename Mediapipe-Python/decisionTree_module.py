@@ -41,7 +41,7 @@ def train(X_train,y_train,best_params):
 
 	return model
 
-def findBestHyperparameters(X_train, y_train, X_test, y_test):
+def findBestHyperparameters(X_train, y_train):
 	def objective(trial):
 		dtc_params = dict(
 			max_depth = trial.suggest_int("max_depth", 2, 100),

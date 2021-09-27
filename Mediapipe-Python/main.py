@@ -126,7 +126,7 @@ math_module.confusionMatrix(y_test, y_pred_DT, actions)
 
 
 print("Best HP training: ")				# ----------------------------------------- scommentare per optuna -------
-study=decisionTree_module.findBestHyperparameters(X_train, y_train, X_test, y_test)
+study=decisionTree_module.findBestHyperparameters(X_train, y_train)
 model=decisionTree_module.train(X_train, y_train,study.best_params)
 # Predict the response for test dataset
 y_pred = model.predict(X_test)
