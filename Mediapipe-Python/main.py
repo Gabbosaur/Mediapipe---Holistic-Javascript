@@ -146,7 +146,7 @@ math_module.confusionMatrix(y_test, y_pred_DT, actions)
 # print("cross val score DT:\t\t", score)
 # print("cross val score DT mean:\t", score.mean())
 
-######################carico miglior modello
+# ---------- carico miglior modello
 print("\n\nBest HP training: \n")
 best_model_decisionTree=math_module.load_model('decision_tree.sav')
 cross_score = cross_val_score(best_model_decisionTree, X_train, y_train, cv=5)
@@ -180,7 +180,7 @@ math_module.confusionMatrix(y_test, y_pred_RF, actions)
 # math_module.confusionMatrix(y_test, y_pred, actions)
 
 
-######################carico miglior modello
+# ---------- carico miglior modello
 print("\n\nBest HP training: \n")
 best_model_random_forest=math_module.load_model('random_forest.sav')
 cross_score = cross_val_score(best_model_random_forest, X_train, y_train, cv=5)
@@ -208,7 +208,7 @@ math_module.confusionMatrix(y_test, y_pred_SVM, actions)
 # math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
-######################carico miglior modello
+# ----------  carico miglior modello
 print("\n\nBest HP training: \n")
 best_model_SVM=math_module.load_model('svm.sav')
 cross_score = cross_val_score(best_model_SVM, X_train, math_module.oneHot_to_1D(y_train), cv=5)
@@ -216,6 +216,10 @@ print("best score: %f accuracy with a standard deviation of %f" % (cross_score.m
 # Predict the response for test dataset
 y_pred = best_model_SVM.predict(X_test)
 math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
+
+
+
+
 
 # ##########################################				GRADIENT BOOSTING
 print("\n-------- GRADIENT BOOSTING --------")
@@ -231,7 +235,7 @@ math_module.confusionMatrix(y_test, y_pred_GB, actions)
 
 # math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
-######################carico miglior modello
+# ---------- carico miglior modello
 print("\n\nBest HP training: \n")
 best_model_gradient_boosting=math_module.load_model('gradient_boosting.sav')
 cross_score = cross_val_score(best_model_gradient_boosting, X_train, math_module.oneHot_to_1D(y_train), cv=5)
@@ -241,6 +245,8 @@ y_pred = best_model_gradient_boosting.predict(X_test)
 math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
+
+
 ##########################################				EXTREME GRADIENT BOOSTING
 print("\n-------- EXTREME GRADIENT BOOSTING --------")
 print("Normal training: ")
@@ -248,7 +254,7 @@ y_pred_XGB = xgboost_module.train_and_score(X_train, X_test, y_train, y_test)
 
 math_module.confusionMatrix(y_test, y_pred_XGB, actions)
 
-## ----------------------------------------------------- scommentare per optuna
+# # ----------------------------------------------------- scommentare per optuna
 # print("Best HP training: ")
 # study=xgboost_module.findBestHyperparameters(X_train, y_train)
 # model=xgboost_module.train(X_train, y_train,study.best_params)
@@ -258,7 +264,7 @@ math_module.confusionMatrix(y_test, y_pred_XGB, actions)
 # math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
-######################carico miglior modello
+# ---------- carico miglior modello
 print("\n\nBest HP training: \n")
 best_model_XGB=math_module.load_model('xgboost.sav')
 cross_score = cross_val_score(best_model_XGB, X_train, math_module.oneHot_to_1D(y_train), cv=5)
@@ -272,18 +278,53 @@ math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
 
-##########################################				Live webcam testing
-# num_rep = 5
+#########################################				Live webcam testing
+num_rep = 5
 
-# tutte_le_rep = alzateLaterali_live_module.alzateLaterali_live(num_rep)
-# # calcolo features e conversione in dataframe
-# feature_rep = math_module.calculate_feature_alzateLaterali(tutte_le_rep)
-# X_rep = decisionTree_module.conversione_dataset_al(feature_rep)
+tutte_le_rep = alzateLaterali_live_module.alzateLaterali_live(num_rep)
+# calcolo features e conversione in dataframe
+feature_rep = math_module.calculate_feature_alzateLaterali(tutte_le_rep)
+X_rep = math_module.conversione_dataset_al(feature_rep)
 
-# prediction = model.predict(X_rep)
+esercizio = ["Esercizio con braccia piegate.", "Esercizio con braccia asimmetriche.", "Esercizio con braccia minore di 90 gradi.", "Esercizio OK."]
 
-# for i in range(0,len(prediction)):
-# 	print("valore predetto per campione "+ str(i)+ ": "+str(actions[np.argmax(prediction[i])])) #prediction
+
+
+prediction = best_model_decisionTree.predict(X_rep) # returna array di array (one-hot encoding)
+print("DT:")
+print(prediction)
+for i in range(0,len(prediction)):
+	if 1 in prediction[i]:
+		print("DT: valore predetto per campione "+ str(i)+ ": "+str(esercizio[np.argmax(prediction[i])])) #prediction
+	else:
+		print("DT: valore predetto per campione "+ str(i)+ ": campione nullo")
+
+prediction = best_model_random_forest.predict(X_rep) # returna array di array (one-hot encoding)
+print("RF:")
+print(prediction)
+for i in range(0,len(prediction)):
+	if 1 in prediction[i]:
+		print("RF: valore predetto per campione "+ str(i)+ ": "+str(esercizio[np.argmax(prediction[i])])) #prediction
+	else:
+		print("RF: valore predetto per campione "+ str(i)+ ": campione nullo")
+
+prediction = best_model_SVM.predict(X_rep) # returna array monodimensionale
+print("SVM:")
+print(prediction)
+for i in range(0,len(prediction)):
+	print("SVM: valore predetto per campione "+ str(i)+ ": "+str(esercizio[prediction[i]])) #prediction
+
+prediction = best_model_gradient_boosting.predict(X_rep) # returna array monodimensionale
+print("GB:")
+print(prediction)
+for i in range(0,len(prediction)):
+	print("GB: valore predetto per campione "+ str(i)+ ": "+str(esercizio[prediction[i]])) #prediction
+
+prediction = best_model_XGB.predict(X_rep) # returna array monodimensionale
+print("XGB:")
+print(prediction)
+for i in range(0,len(prediction)):
+	print("XGB: valore predetto per campione "+ str(i)+ ": "+str(esercizio[prediction[i]])) #prediction
 
 
 

@@ -63,7 +63,7 @@ def findBestHyperparameters(X_train, y_train):
 
 	# 3. Create a study object and optimize the objective function.
 	study = optuna.create_study() # di default è minimize, quindi di minimizzare l'errore
-	study.optimize(objective, n_trials=30)
+	study.optimize(objective, n_trials=150)
 
 	print(study.best_params) # Printa i migliori parametri
 	print(1.0 - study.best_value) # Printa l'accuracy

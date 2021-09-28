@@ -7,7 +7,6 @@ import time
 
 #nostri moduli
 import math_module
-import decisionTree_module
 
 """
 # VIDEO FEED
@@ -164,7 +163,7 @@ def alzateLaterali_live(num_rep):
 				else:
 					if(flag_fine_es == 1):
 						flag_fine_es=0
-						
+
 
 						'''
 						PREDICTION IN REAL TIME, ma troppo lento --> usare i threads ???
@@ -173,7 +172,7 @@ def alzateLaterali_live(num_rep):
 						feature_X=math_module.calculate_feature_alzateLaterali(record_movimento)
 						print("featureX: " + feature_X)
 
-						X=decisionTree_module.conversione_dataset_al(feature_X)
+						X=math_module.conversione_dataset_al(feature_X)
 
 						prediction = model.predict(X) # array di probabilità. for example: [0 0.3 0.4 0.3] e prendiamo con argmax l'indice con il valore più alto
 						print("prediction: " + prediction)
@@ -215,6 +214,7 @@ def alzateLaterali_live(num_rep):
 			)  # color=(b,g,r)
 
 			cv2.imshow("Mediapipe Feed", image)
+			cv2.setWindowProperty("Mediapipe Feed", cv2.WND_PROP_TOPMOST, 1)
 
 			if cv2.waitKey(10) & 0xFF == ord("q"):
 				break
