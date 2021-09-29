@@ -39,6 +39,9 @@ def alzateLaterali_live(num_rep):
 	record = 0
 
 	cap = cv2.VideoCapture(0)
+	width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+	height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
 
 	n_frame = 0
 
@@ -66,10 +69,13 @@ def alzateLaterali_live(num_rep):
 				landmarks = results.pose_landmarks.landmark
 
 				cv2.putText(image,"BODY FOUND",
-							(400,15),
+							(int(width/2)-25,15),
 							cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA
 				)
 				# print(landmarks)
+
+				#status box
+				cv2.rectangle(image, (0,0), (250,150), (245,117,16), -1)
 
 				"""
 				ciclo ogni landmarks
@@ -99,22 +105,22 @@ def alzateLaterali_live(num_rep):
 
 				# Visualize angle
 				cv2.putText(image,str(math.trunc(angle_elbow_left)) + "deg",
-					tuple(np.multiply(elbow_left, [640, 480]).astype(int)),
+					tuple(np.multiply(elbow_left, [width, height-25]).astype(int)),
 					cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA
 				)
 
 				cv2.putText(image,str(math.trunc(angle_elbow_right)) + "deg",
-					tuple(np.multiply(elbow_right, [640, 480]).astype(int)),
+					tuple(np.multiply(elbow_right, [width-25, height-25]).astype(int)),
 					cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA
 				)
 
 				cv2.putText(image,str(math.trunc(angle_shoulder_left)) + "deg",
-							tuple(np.multiply(shoulder_left, [640, 480]).astype(int)),
+							tuple(np.multiply(shoulder_left, [width, height-25]).astype(int)),
 							cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA
 				)
 
 				cv2.putText(image,str(math.trunc(angle_shoulder_right)) + "deg",
-					tuple(np.multiply(shoulder_right, [640, 480]).astype(int)),
+					tuple(np.multiply(shoulder_right, [width, height-25]).astype(int)),
 					cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA
 				)
 
@@ -126,13 +132,13 @@ def alzateLaterali_live(num_rep):
 					record = 1
 					if (flag_discesa == 0):
 						flag_salita = 1
-					cv2.putText(image,"posizione di partenza riconosciuta",(60,120),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA)
+					cv2.putText(image,"posizione di" + "\n" + "partenza riconosciuta",(10,100),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA)
 				else:
 					if (flag_salita == 1):
 						if (angle_shoulder_left >= 30 or angle_shoulder_right >= 30):
 							flag_es_valido = 1
-							cv2.putText(image,"soglia validità es superata",
-									(60,120),
+							cv2.putText(image,"soglia validita' es superata",
+									(10,100),
 									cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA
 							)
 							if (flag_discesa == 0):
@@ -196,8 +202,7 @@ def alzateLaterali_live(num_rep):
 			except:
 				pass
 
-			#status box
-			cv2.rectangle(image, (0,0), (225,80), (245,117,16), -1)
+
 
 			# Reps data
 			cv2.putText(image, 'REPS',
