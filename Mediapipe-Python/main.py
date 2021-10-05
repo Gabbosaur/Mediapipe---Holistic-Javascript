@@ -293,11 +293,11 @@ tts.save("Mediapipe-Python/audio/fineAlzateLaterali.mp3")
 
 tutte_le_rep = alzateLaterali_live_module.alzateLaterali_live(num_rep)
 
+# init mixer and play sound
 pygame.init()
 mixer.init()
 mixer.music.load("Mediapipe-Python/audio/fineAlzateLaterali.mp3")
 mixer.music.play()
-
 
 while pygame.mixer.music.get_busy():
 	pygame.time.Clock().tick(10)
@@ -354,7 +354,7 @@ for i in range(0,len(prediction)):
 	print("XGB: valore predetto per campione "+ str(i)+ ": "+str(esercizio[prediction[i]])) #prediction
 
 
-
+# play sound
 mixer.music.load("Mediapipe-Python/audio/outcomeAlzateLaterali.mp3")
 mixer.music.play()
 

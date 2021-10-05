@@ -54,7 +54,7 @@ def alzateLaterali_live(num_rep):
 	tutte_le_rep = []
 	record = 0
 
-	cap = cv2.VideoCapture(0)
+	cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 	width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 	height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
