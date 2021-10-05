@@ -4,6 +4,8 @@ import mediapipe as mp
 import numpy as np
 import math
 import time
+import winsound
+from threading import Thread
 
 #nostri moduli
 import math_module
@@ -24,6 +26,10 @@ def __extract_keypoints(results):
 	pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(33*4)
 	return pose
 
+def playSound(freq):
+    play_thread = Thread(target=lambda: winsound.Beep(freq,200))
+    play_thread.start()
+
 def alzateLaterali_live(num_rep):
 
 	mp_drawing = mp.solutions.drawing_utils  # drawing utilities
@@ -39,6 +45,10 @@ def alzateLaterali_live(num_rep):
 	flag_scritta_alzata = 0
 	flag_scritta_tpose = 0
 	flag_scritta_fine = 0
+
+	flag_beep_tpose = 0
+	flag_inizio_esercizio = 0
+
 
 	record_movimento = []
 	tutte_le_rep = []
@@ -141,7 +151,8 @@ def alzateLaterali_live(num_rep):
 					# cv2.putText(image,"posizione di" + "\n" + "partenza riconosciuta",(10,100),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA)
 				else:
 					if (angle_shoulder_left >= 80 or angle_shoulder_right >= 80):
-						flag_scritta_tpose = 1
+						if flag_inizio_esercizio == 1:
+							flag_scritta_tpose = 1
 
 					if (flag_salita == 1):
 
@@ -151,7 +162,6 @@ def alzateLaterali_live(num_rep):
 							# 		(10,100),
 							# 		cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA
 							# )
-
 
 							if (flag_discesa == 0):
 								flag_salita = 0
@@ -174,6 +184,7 @@ def alzateLaterali_live(num_rep):
 					flag_scritta_alzata = 0
 					flag_scritta_tpose = 0
 					flag_scritta_fine = 1
+
 
 				# if(flag_salita==1 or flag_discesa==1):
 				# 	frame_pose=__extract_keypoints(results)
@@ -233,28 +244,47 @@ def alzateLaterali_live(num_rep):
 			if (flag_salita == 0 and flag_scritta_partenza == 0):
 				cv2.putText(image,"Posizione partenza",(10,100),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA)
 			else:
+				if flag_scritta_partenza == 0:
+					playSound(500)
 				flag_scritta_partenza = 1
+				flag_inizio_esercizio = 1
 				cv2.putText(image,"Posizione partenza",(10,100),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 0),2,cv2.LINE_AA)
+
 
 
 			if (flag_discesa == 0 and flag_scritta_alzata == 0):
 				cv2.putText(image,"Fase di salita",(10,120),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA)
 			else:
-				flag_scritta_alzata = 1 # flag_discesa diventa 1 quando supera i 30 gradi
-				cv2.putText(image,"Fase di salita",(10,120),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 0),2,cv2.LINE_AA)
+				if flag_inizio_esercizio == 1:
+					if flag_scritta_alzata == 0:
+						playSound(500)
+					flag_scritta_alzata = 1 # flag_discesa diventa 1 quando supera i 30 gradi
+					cv2.putText(image,"Fase di salita",(10,120),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 0),2,cv2.LINE_AA)
 
 
 			if (flag_scritta_tpose == 0):
 				cv2.putText(image,"Posizione t-pose",(10,140),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA)
 			else:
-				cv2.putText(image,"Posizione t-pose",(10,140),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 0),2,cv2.LINE_AA)
+				if flag_inizio_esercizio == 1:
+					if flag_beep_tpose == 0:
+						playSound(500)
+						flag_beep_tpose = 1
+					cv2.putText(image,"Posizione t-pose",(10,140),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 0),2,cv2.LINE_AA)
+
+				else:
+					cv2.putText(image,"Posizione t-pose",(10,140),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA)
 
 
 			if (flag_scritta_fine == 0):
 				cv2.putText(image,"Fase di discesa (fine " + str(rep_counter+1) + " rep)",(10,160),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA)
 			else:
-				cv2.putText(image,"Fase di discesa (fine " + str(rep_counter+1) + " rep)",(10,160),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 0),2,cv2.LINE_AA)
-				flag_scritta_fine = 0 # inizializzo a 0
+				if flag_inizio_esercizio == 1:
+					playSound(1000)
+					cv2.putText(image,"Fase di discesa (fine " + str(rep_counter+1) + " rep)",(10,160),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 0),2,cv2.LINE_AA)
+					flag_scritta_fine = 0 # inizializzo a 0
+					flag_beep_tpose = 0
+					flag_inizio_esercizio = 0
+
 
 			# Render detections
 			mp_drawing.draw_landmarks(image,results.pose_landmarks,mp_pose.POSE_CONNECTIONS,
