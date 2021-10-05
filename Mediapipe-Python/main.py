@@ -25,7 +25,10 @@ from sklearn.model_selection import train_test_split # Import train_test_split f
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score as AS
 from sklearn import tree
-import sklearn
+
+from gtts import gTTS
+from playsound import playsound
+
 
 
 #nostri moduli
@@ -279,9 +282,16 @@ math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
 #########################################				Live webcam testing
-num_rep = 5
+num_rep = 3
+
+text = "Hai concluso le tue " + str(num_rep) + " ripetizioni"
+tts = gTTS(text, lang='it')
+tts.save("Mediapipe-Python/audio/fineAlzateLaterali.mp3")
 
 tutte_le_rep = alzateLaterali_live_module.alzateLaterali_live(num_rep)
+playsound("Mediapipe-Python/audio/fineAlzateLaterali.mp3")
+
+
 # calcolo features e conversione in dataframe
 feature_rep = math_module.calculate_feature_alzateLaterali(tutte_le_rep)
 X_rep = math_module.conversione_dataset_al(feature_rep)
@@ -311,8 +321,13 @@ for i in range(0,len(prediction)):
 prediction = best_model_SVM.predict(X_rep) # returna array monodimensionale
 print("SVM:")
 print(prediction)
+text = "Risultato: "
 for i in range(0,len(prediction)):
-	print("SVM: valore predetto per campione "+ str(i)+ ": "+str(esercizio[prediction[i]])) #prediction
+	print("SVM: valore predetto per campione "+ str(i)+ ": "+ str(esercizio[prediction[i]])) #prediction
+	text = text + "ripetizione numero " + str(i+1) + ": " + str(esercizio[prediction[i]])
+tts = gTTS(text, lang='it')
+tts.save("Mediapipe-Python/audio/outcomeAlzateLaterali.mp3")
+
 
 prediction = best_model_gradient_boosting.predict(X_rep) # returna array monodimensionale
 print("GB:")
@@ -327,8 +342,7 @@ for i in range(0,len(prediction)):
 	print("XGB: valore predetto per campione "+ str(i)+ ": "+str(esercizio[prediction[i]])) #prediction
 
 
-
-
+playsound("Mediapipe-Python/audio/outcomeAlzateLaterali.mp3")
 
 
 '''

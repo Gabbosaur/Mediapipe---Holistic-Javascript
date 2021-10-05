@@ -26,7 +26,7 @@ def __extract_keypoints(results):
 	pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(33*4)
 	return pose
 
-def playSound(freq):
+def playBeep(freq):
     play_thread = Thread(target=lambda: winsound.Beep(freq,200))
     play_thread.start()
 
@@ -245,7 +245,7 @@ def alzateLaterali_live(num_rep):
 				cv2.putText(image,"Posizione partenza",(10,100),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA)
 			else:
 				if flag_scritta_partenza == 0:
-					playSound(500)
+					playBeep(500)
 				flag_scritta_partenza = 1
 				flag_inizio_esercizio = 1
 				cv2.putText(image,"Posizione partenza",(10,100),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 0),2,cv2.LINE_AA)
@@ -257,7 +257,7 @@ def alzateLaterali_live(num_rep):
 			else:
 				if flag_inizio_esercizio == 1:
 					if flag_scritta_alzata == 0:
-						playSound(500)
+						playBeep(500)
 					flag_scritta_alzata = 1 # flag_discesa diventa 1 quando supera i 30 gradi
 					cv2.putText(image,"Fase di salita",(10,120),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 0),2,cv2.LINE_AA)
 
@@ -267,7 +267,7 @@ def alzateLaterali_live(num_rep):
 			else:
 				if flag_inizio_esercizio == 1:
 					if flag_beep_tpose == 0:
-						playSound(500)
+						playBeep(500)
 						flag_beep_tpose = 1
 					cv2.putText(image,"Posizione t-pose",(10,140),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 0),2,cv2.LINE_AA)
 
@@ -279,7 +279,7 @@ def alzateLaterali_live(num_rep):
 				cv2.putText(image,"Fase di discesa (fine " + str(rep_counter+1) + " rep)",(10,160),cv2.FONT_HERSHEY_SIMPLEX,0.5,(255, 255, 255),2,cv2.LINE_AA)
 			else:
 				if flag_inizio_esercizio == 1:
-					playSound(1000)
+					playBeep(1000)
 					cv2.putText(image,"Fase di discesa (fine " + str(rep_counter+1) + " rep)",(10,160),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0, 255, 0),2,cv2.LINE_AA)
 					flag_scritta_fine = 0 # inizializzo a 0
 					flag_beep_tpose = 0
@@ -302,3 +302,4 @@ def alzateLaterali_live(num_rep):
 
 		cap.release()
 		cv2.destroyAllWindows()
+
