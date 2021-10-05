@@ -7,12 +7,15 @@
 # pip install mediapipe opencv-python
 
 
+import pathlib
 import cv2
 import mediapipe as mp
 import numpy as np
 import matplotlib.pyplot as plt
 import math
 import os
+from pygame import mixer
+import pygame
 from scipy.sparse.sputils import matrix
 
 from tensorflow.keras.utils import to_categorical
@@ -289,7 +292,16 @@ tts = gTTS(text, lang='it')
 tts.save("Mediapipe-Python/audio/fineAlzateLaterali.mp3")
 
 tutte_le_rep = alzateLaterali_live_module.alzateLaterali_live(num_rep)
-playsound("Mediapipe-Python/audio/fineAlzateLaterali.mp3")
+
+pygame.init()
+mixer.init()
+mixer.music.load("Mediapipe-Python/audio/fineAlzateLaterali.mp3")
+mixer.music.play()
+
+
+while pygame.mixer.music.get_busy():
+	pygame.time.Clock().tick(10)
+
 
 
 # calcolo features e conversione in dataframe
@@ -324,7 +336,7 @@ print(prediction)
 text = "Risultato: "
 for i in range(0,len(prediction)):
 	print("SVM: valore predetto per campione "+ str(i)+ ": "+ str(esercizio[prediction[i]])) #prediction
-	text = text + "ripetizione numero " + str(i+1) + ": " + str(esercizio[prediction[i]])
+	text = text + " ripetizione numero " + str(i+1) + ": " + str(esercizio[prediction[i]]+"\n")
 tts = gTTS(text, lang='it')
 tts.save("Mediapipe-Python/audio/outcomeAlzateLaterali.mp3")
 
@@ -342,7 +354,13 @@ for i in range(0,len(prediction)):
 	print("XGB: valore predetto per campione "+ str(i)+ ": "+str(esercizio[prediction[i]])) #prediction
 
 
-playsound("Mediapipe-Python/audio/outcomeAlzateLaterali.mp3")
+
+mixer.music.load("Mediapipe-Python/audio/outcomeAlzateLaterali.mp3")
+mixer.music.play()
+
+while pygame.mixer.music.get_busy():
+	pygame.time.Clock().tick(10)
+
 
 
 '''
