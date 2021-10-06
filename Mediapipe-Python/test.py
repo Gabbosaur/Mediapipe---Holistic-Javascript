@@ -1,23 +1,27 @@
-import pygame
-from pygame import mixer
-import os
-import pathlib
+import numpy as np
+import cv2
 
+cap = cv2.VideoCapture(0)
 
-PROJECT_PATH=pathlib.Path(__file__).parent.resolve()
+# Define the codec and create VideoWriter object
+#fourcc = cv2.cv.CV_FOURCC(*'DIVX')
+#out = cv2.VideoWriter('output.avi',fourcc, 20.0, (640,480))
+out = cv2.VideoWriter('output.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 20.0, (640,480))
 
-fileName = "audio/fineAlzateLaterali.mp3"
-fileName2 = "Mediapipe-Python/audio/outcomeAlzateLaterali.mp3"
-file = os.path.join(PROJECT_PATH, fileName)
-fil2 = os.path.join(PROJECT_PATH, fileName2)
+while(cap.isOpened()):
+    ret, frame = cap.read()
+    if ret==True:
 
-pygame.init()
-mixer.init()
-mixer.music.load("Mediapipe-Python/audio/fineAlzateLaterali.mp3")
-mixer.music.play()
+        # write the flipped frame
+        out.write(frame)
 
+        cv2.imshow('frame',frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    else:
+        break
 
-while pygame.mixer.music.get_busy():
-	pygame.time.Clock().tick(10)
-
-
+# Release everything if job is finished
+cap.release()
+out.release()
+cv2.destroyAllWindows()

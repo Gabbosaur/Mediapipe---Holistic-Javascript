@@ -58,8 +58,9 @@ def alzateLaterali_live(num_rep):
 	width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 	height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 
-
 	n_frame = 0
+
+	out = cv2.VideoWriter('outputAlzateLaterali.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 10.0, (640,480))
 
 	## Setup mediapipe instance
 	with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
@@ -292,6 +293,17 @@ def alzateLaterali_live(num_rep):
 				mp_drawing.DrawingSpec(color=(0, 255, 0), thickness=2),
 			)  # color=(b,g,r)
 
+
+			# Save video
+			if ret==True:
+				# write the flipped frame
+				out.write(image)
+
+			# else:
+			# 	break
+
+
+
 			cv2.imshow("Mediapipe Feed", image)
 			cv2.setWindowProperty("Mediapipe Feed", cv2.WND_PROP_TOPMOST, 1)
 
@@ -301,5 +313,6 @@ def alzateLaterali_live(num_rep):
 			# print("--- n_frame: " + str(n_frame) + " --- " + "%s seconds ---" % (time.time() - start_time))
 
 		cap.release()
+		out.release()
 		cv2.destroyAllWindows()
 
