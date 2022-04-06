@@ -5,10 +5,10 @@ disponibilita(1, 60). % giorno disponibile espresso in numero, minuti dell'allen
 disponibilita(3, 30).
 % disponibilita(5, 90).
 
-{esercizio(pushup,1, b, 1)}.
+esercizio(pushup,1, b, 1).
 % {esercizio(pushup,2, b, 1)}.
 % {esercizio(pushup,3, b, 1)}.
-{esercizio(squat,4, b, 2)}.
+esercizio(squat,4, b, 2).
 % {esercizio(pushup,5, b, 2)}.
 % {esercizio(pushup,6, b, 2)}.
 % {esercizio(pushup,7, b, 2)}.
@@ -22,7 +22,7 @@ disponibilita(3, 30).
 % % {esercizio(pushup,5, w, 4)}.
 % {esercizio(pushup,6, w, 4)}.
 
-1 {esercizi_settimana(NOME_ESERCIZIO, N_REP, CATEGORIA, LIVELLO_RAMO, DAY) : disponibilita(DAY, _)} NUM_DAYS :- NUM_DAYS = #count{DAYS : disponibilita(DAYS,_)}, esercizio(NOME_ESERCIZIO, N_REP, CATEGORIA, LIVELLO_RAMO).
+{esercizi_settimana(NOME_ESERCIZIO, N_REP, CATEGORIA, LIVELLO_RAMO, DAY) : esercizio(NOME_ESERCIZIO, N_REP, CATEGORIA, LIVELLO_RAMO), disponibilita(DAY, _)}.
 
 
 % prendiamo solo gli answers dove abbiamo tutti i giorni disponibili
