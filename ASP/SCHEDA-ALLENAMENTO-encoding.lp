@@ -29,8 +29,7 @@ next_level(X,Z) :- esegui(_,_,_,_,_,X,_,_,_,_,_,_,_), X = Z-1, #false : X < Y, e
 
 % % prendo tutti gli atoms di esercizio dove ci possono essere al massimo 2 livelli. (Esempio se sono livello B3, avrò esercizi solo di B3 e B2).
 :- #count{Ramo, Livello_ramo : esegui(_,_,_,_,Ramo,Livello_ramo,_,_,_,_,_,_,_)} > 2.
-% nel caso B1, non possiamo cancellare gli answer sets che hanno 0 next_level
-% quindi ci assicuriamo che l'answer set contenga soltanto uno o due livelli
+% nel caso S5, abbiamo answer set con esercizi B1 S4 S5 che non va bene, il vincolo serve per cancellare questo answer.
 
 % tolgo tutti gli esercizi che hanno il livello_ramo > di livello attuale.
 :- livello_attuale(_, Livello_attuale), esegui(_,_,_,_,_,Livello_ramo,_,_,_,_,_,_,_), Livello_ramo > Livello_attuale.
@@ -38,6 +37,16 @@ next_level(X,Z) :- esegui(_,_,_,_,_,X,_,_,_,_,_,_,_), X = Z-1, #false : X < Y, e
 % filtro per lettera categoria esercizio.
 :- #count{Categoria: esegui(_,_,_,_,Categoria,_,_,_,_,_,_,_,_), livello_attuale(Categoria, _)} = 0.
 
+% se sono livello s w e, non devo vedere esercizi di altri rami. Per esempio se sono s5, non devo vedere e4 e w4.
+:- livello_attuale(Categoria,_), esegui(_,_,_,_,Cat_es,_,_,_,_,_,_,_,_), Categoria != Cat_es, Cat_es != b.
+
+% filtro per strumenti a disposizione.
+% conta quante volte un esercizio utilizza quel determinato strumento.
+countStrumenti(CS, Strumento) :- CS = #count{NOME_ESERCIZIO, DAY : esegui(NOME_ESERCIZIO,_,_,_,_,_,_,_,_,_,Strumento,_,DAY)}, strumento(Strumento).
+% contiamo gli esercizi con chiave NOME_ESERCIZIO, Strumento e DAY.
+countEs(CE) :- CE = #count{NOME_ESERCIZIO, Strumento, DAY : esegui(NOME_ESERCIZIO,_,_,_,_,_,_,_,_,_,Strumento,_,DAY)}.
+
+:- TOTAL = #sum{CS : countStrumenti(CS, _)}, countEs(CE), TOTAL != CE.
 
 
 %% TODOS
@@ -52,5 +61,8 @@ next_level(X,Z) :- esegui(_,_,_,_,_,X,_,_,_,_,_,_,_), X = Z-1, #false : X < Y, e
 
 
 #show esegui/13.
-#show next_level/2.
+% #show next_level/2.
+#show countStrumenti/2.
+#show countEs/1.
+#show total/1.
 % #show test/3.
