@@ -3,7 +3,7 @@
 % variante_esercizio(id, nome_esercizio, categoria_esercizio, livello_esercizio, n_rep, n_serie, durata_isometria, pesi_extra, strumento, tempo_riposo).
 
 % input utente
-livello_attuale(s,5). % livello attuale dell'utente (categoria livello, livello_ramo)
+livello_attuale(b,2). % livello attuale dell'utente (categoria livello, livello_ramo)
 disponibilita(1, 3600). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
 disponibilita(99, 3600). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
 input_performance(2,1,-10, 0). % n_rep, n_serie, tempo riposo, pesi.
@@ -12,8 +12,13 @@ input_performance(2,1,-10, 0). % n_rep, n_serie, tempo riposo, pesi.
 % ragionare su questo atom per quando avremo rep negativi
 % mettere il tempo di esecuzione per i vari esercizi? per quando si ottimizza i tempi?
 
+warmup_time(600). % secondi di tempo di riscaldamento
+
 % % check strumenti
-strumento("pullup bar").
+strumento("corpo libero").
+% strumento("portable parallel bars").
+strumento("portable parallel bars").
+
 % haveElasticBand.
 % haveWeights.
 
@@ -32,8 +37,8 @@ variante_esercizio(5, "pushup rialzato neutro", b, 1, 3, 1, 0, 0, "corpo libero"
 % esercizio("alzate laterali",6,1,1). % valutare un attimino i fattori utilità per i vari esercizi
 % variante_esercizio(9,"alzate laterali",b,1,3,1,0,0,"corpo libero",30).
 
-% esercizio("biceps curl",7,1,1).
-% variante_esercizio(10, "biceps curl",b,1,3,1,0,2,"dumbbells",30).
+esercizio("biceps curl",7,1,1).
+variante_esercizio(10, "biceps curl",b,1,3,1,0,2,"dumbbells",30).
 % variante_esercizio(11, "biceps curl",b,1,3,1,0,5,"elastic band",30). % 5 10 15 20 25
 
 % esercizio("australian pullups 45",7,3,1).

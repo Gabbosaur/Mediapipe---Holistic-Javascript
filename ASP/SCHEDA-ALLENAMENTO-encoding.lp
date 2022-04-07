@@ -41,12 +41,13 @@ next_level(X,Z) :- esegui(_,_,_,_,_,X,_,_,_,_,_,_,_), X = Z-1, #false : X < Y, e
 :- livello_attuale(Categoria,_), esegui(_,_,_,_,Cat_es,_,_,_,_,_,_,_,_), Categoria != Cat_es, Cat_es != b.
 
 % filtro per strumenti a disposizione.
-% conta quante volte un esercizio utilizza quel determinato strumento.
-countStrumenti(CS, Strumento) :- CS = #count{NOME_ESERCIZIO, DAY : esegui(NOME_ESERCIZIO,_,_,_,_,_,_,_,_,_,Strumento,_,DAY)}, strumento(Strumento).
-% contiamo gli esercizi con chiave NOME_ESERCIZIO, Strumento e DAY.
-countEs(CE) :- CE = #count{NOME_ESERCIZIO, Strumento, DAY : esegui(NOME_ESERCIZIO,_,_,_,_,_,_,_,_,_,Strumento,_,DAY)}.
-
+countStrumenti(CS, Strumento) :- CS = #count{NOME_ESERCIZIO, DAY : esegui(NOME_ESERCIZIO,_,_,_,_,_,_,_,_,_,Strumento,_,DAY)}, strumento(Strumento). % conta quante volte un esercizio utilizza quel determinato strumento.
+countEs(CE) :- CE = #count{NOME_ESERCIZIO, Strumento, DAY : esegui(NOME_ESERCIZIO,_,_,_,_,_,_,_,_,_,Strumento,_,DAY)}. % contiamo gli esercizi con chiave NOME_ESERCIZIO, Strumento e DAY.
+% compara il numero totale degli esercizi con la somma degli esercizi che vanno svolti con i nostri strumenti, e cancella gli answer set nel caso i risultati siano diversi.
 :- TOTAL = #sum{CS : countStrumenti(CS, _)}, countEs(CE), TOTAL != CE.
+
+
+
 
 
 %% TODOS
