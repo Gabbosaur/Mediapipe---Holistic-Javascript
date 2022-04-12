@@ -3,11 +3,11 @@
 % variante_esercizio(id, nome_esercizio, categoria_esercizio, livello_esercizio, n_rep, n_serie, durata_rep, durata_isometria, pesi_extra, strumento, tempo_riposo).
 
 % input utente
-livello_attuale(b,1). % livello attuale dell'utente (categoria livello, livello_ramo)
+livello_attuale(b,2). % livello attuale dell'utente (categoria livello, livello_ramo)
 disponibilita(1, 3600). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
 disponibilita(99, 3600). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
 
-input_performance_base(0,0,0, 0). % n_rep, n_serie, tempo riposo, pesi extra. (Ricalibrare poi in Python il file di output)
+input_performance_base(2,5,30, 0). % n_rep, n_serie, tempo riposo, pesi extra. (Ricalibrare poi in Python il file di output)
 input_performance_skills(2,1,-10, 0). % n_rep, n_serie, tempo riposo, pesi extra. (Ricalibrare poi in Python il file di output)
 input_performance_endurance(2,1,-10, 0). % n_rep, n_serie, tempo riposo, pesi extra. (Ricalibrare poi in Python il file di output)
 input_performance_weighted(2,1,-10, 0). % n_rep, n_serie, tempo riposo, pesi extra. (Ricalibrare poi in Python il file di output)

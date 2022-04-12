@@ -60,6 +60,17 @@ countEs(CE) :- CE = #count{NOME_ESERCIZIO, Strumento, DAY : esegui(NOME_ESERCIZI
 % Calcolo tempo totale dell'allenamento per il determinato giorno.
 tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*SERIE : esegui(_,_,_,_,_,_,REP,SERIE,DURATA_REP,DURATA_ISO,_,_,TR,DAY)}, disponibilita(DAY, _), warmup_time(WT), TOT = T+WT.
 
+% Prende l'answer set che si avvicina di più ai tempi disponibili dati in input dall'utente.
+#minimize { |TEMPO_DISP-TOT|@1,DAY : tempoTotale(DAY, TOT), disponibilita(DAY, TEMPO_DISP) }.
+
+% 
+
+
+
+% Da usare fattori utilità
+
+% vincolo varietà
+
 
 
 %% TODOS
