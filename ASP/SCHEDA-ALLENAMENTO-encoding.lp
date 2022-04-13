@@ -65,6 +65,10 @@ tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*S
 
 % 
 
+deltaGiorno(DAY, DELTA) :- DELTA = |TEMPO_DISP-TOT|, tempoTotale(DAY, TOT), disponibilita(DAY, TEMPO_DISP).
+mediaDelta(MEDIA) :- DELTA = #sum{D, DAY : deltaGiorno(DAY, D)}, N_GIORNI = #count{DAY : disponibilita(DAY, _)}, MEDIA = DELTA / N_GIORNI.
+nGiorni(N_GIORNI) :- N_GIORNI = #count{DAY : disponibilita(DAY, _)}.
+varianzaDelta(VAR) :- NUM = #sum{(DELTA - MEDIA)**2, DAY : deltaGiorno(DAY, DELTA), mediaDelta(MEDIA)}, nGiorni(N_GIORNI), VAR = NUM / N_GIORNI.
 
 
 % Da usare fattori utilità
@@ -89,4 +93,9 @@ tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*S
 #show countStrumenti/2.
 #show countEs/1.
 #show tempoTotale/2.
+#show deltaGiorno/2.
+#show mediaDelta/1.
+#show nGiorni/1.
+#show varianzaDelta/1.
+
 % #show test/3.
