@@ -1,4 +1,3 @@
-% unione tabelle (TODOS: unire anche il filtro-giorni e filtro-livello e forse altro(?))
 % Generazione di answer sets per categoria base
 {esegui(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE, CL, LR, REP+PR, SERIE+PS, DR, DI, PESI+PP, STRUMENTO, TR+PTR, DAY) :  esercizio(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE), variante_esercizio(_, NOME_ESERCIZIO, CL, LR, REP, SERIE, DR, DI, PESI, STRUMENTO, TR), input_performance_base(PR, PS, PTR, PP), disponibilita(DAY, _)} :- variante_esercizio(_, _, CL, _, _, _, _, _, _, _, _), CL = b.
 
@@ -26,7 +25,7 @@
 % Usato per stabilire una continuità tra il numero dei livelli
 next_level(X,Z) :- esegui(_,_,_,_,_,X,_,_,_,_,_,_,_,_), X = Z-1, #false : X < Y, esegui(_,_,_,_,_,Y,_,_,_,_,_,_,_,_), Y < Z; esegui(_,_,_,_,_,Z,_,_,_,_,_,_,_,_), X < Z.
 
-% % se livello attuale è diverso a 1 (b1), cancella gli answer che hanno 0 next_level.
+% % se livello attuale è diverso a 1 (diverso da b1), cancella gli answer che hanno 0 next_level.
 :- livello_attuale(_,Livello_ramo), Livello_ramo != 1, #count{X,Y : next_level(X,Y)} = 0.
 
 % % cancella gli answers che hanno 2 o più next_level(_,_).
@@ -63,15 +62,18 @@ tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*S
 % Prende l'answer set che si avvicina di più ai tempi disponibili dati in input dall'utente.
 #minimize { |TEMPO_DISP-TOT|@1,DAY : tempoTotale(DAY, TOT), disponibilita(DAY, TEMPO_DISP) }.
 
-% 
 
-deltaGiorno(DAY, DELTA) :- DELTA = |TEMPO_DISP-TOT|, tempoTotale(DAY, TOT), disponibilita(DAY, TEMPO_DISP).
-mediaDelta(MEDIA) :- DELTA = #sum{D, DAY : deltaGiorno(DAY, D)}, N_GIORNI = #count{DAY : disponibilita(DAY, _)}, MEDIA = DELTA / N_GIORNI.
-nGiorni(N_GIORNI) :- N_GIORNI = #count{DAY : disponibilita(DAY, _)}.
-varianzaDelta(VAR) :- NUM = #sum{(DELTA - MEDIA)**2, DAY : deltaGiorno(DAY, DELTA), mediaDelta(MEDIA)}, nGiorni(N_GIORNI), VAR = NUM / N_GIORNI.
+
+% deltaGiorno(DAY, DELTA) :- DELTA = |TEMPO_DISP-TOT|, tempoTotale(DAY, TOT), disponibilita(DAY, TEMPO_DISP).
+% mediaDelta(MEDIA) :- DELTA = #sum{D, DAY : deltaGiorno(DAY, D)}, N_GIORNI = #count{DAY : disponibilita(DAY, _)}, MEDIA = DELTA / N_GIORNI.
+% nGiorni(N_GIORNI) :- N_GIORNI = #count{DAY : disponibilita(DAY, _)}.
+% varianzaDelta(VAR) :- NUM = #sum{(DELTA - MEDIA)**2, DAY : deltaGiorno(DAY, DELTA), mediaDelta(MEDIA)}, nGiorni(N_GIORNI), VAR = NUM / N_GIORNI.
 
 
 % Da usare fattori utilità
+
+
+
 
 % vincolo varietà
 
@@ -93,9 +95,9 @@ varianzaDelta(VAR) :- NUM = #sum{(DELTA - MEDIA)**2, DAY : deltaGiorno(DAY, DELT
 #show countStrumenti/2.
 #show countEs/1.
 #show tempoTotale/2.
-#show deltaGiorno/2.
-#show mediaDelta/1.
-#show nGiorni/1.
-#show varianzaDelta/1.
+% #show deltaGiorno/2.
+% #show mediaDelta/1.
+% #show nGiorni/1.
+% #show varianzaDelta/1.
 
 % #show test/3.
