@@ -443,7 +443,7 @@ esercizio("band assisted muscle up",8,4,1).
 variante_esercizio(320,"band assisted muscle up",s,5,1,1,5,0,0,"pullup bar",30).
 
 
-
+% % % Siccome sono lvl S5, negli answer set mi dà gli esercizi di S5 e B3. Probabile per un certo vincolo che obbliga solo B3 (?)
 
 
 
