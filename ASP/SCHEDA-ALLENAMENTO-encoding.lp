@@ -26,7 +26,8 @@
 next_level(X,Z) :- esegui(_,_,_,_,_,X,_,_,_,_,_,_,_,_), X = Z-1, #false : X < Y, esegui(_,_,_,_,_,Y,_,_,_,_,_,_,_,_), Y < Z; esegui(_,_,_,_,_,Z,_,_,_,_,_,_,_,_), X < Z.
 
 % % se livello attuale è diverso a 1 (diverso da b1), cancella gli answer che hanno 0 next_level.
-:- livello_attuale(_,Livello_ramo), Livello_ramo != 1, #count{X,Y : next_level(X,Y)} = 0.
+% :- livello_attuale(_,Livello_ramo), Livello_ramo != 1, #count{X,Y : next_level(X,Y)} = 0.
+% da cancellare probabilmente.
 
 % % cancella gli answers che hanno 2 o più next_level(_,_).
 :- #count{X,Y: next_level(X,Y)} > 1.
@@ -62,7 +63,7 @@ tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*S
 % Prende l'answer set che si avvicina di più ai tempi disponibili dati in input dall'utente.
 #minimize { |TEMPO_DISP-TOT|@1,DAY : tempoTotale(DAY, TOT), disponibilita(DAY, TEMPO_DISP) }.
 
-
+% #minimize { VAR@2 : DELTA_SUM = #sum{D, DAY : deltaGiorno(DAY, D)}, N_GIORNI = #count{DAY : disponibilita(DAY, _)}, MEDIA = DELTA_SUM / N_GIORNI, NUM = #sum{(DELTA - MEDIA)**2, DAY : deltaGiorno(DAY, DELTA), mediaDelta(MEDIA)}, nGiorni(N_GIORNI), VAR = NUM / N_GIORNI}
 
 % deltaGiorno(DAY, DELTA) :- DELTA = |TEMPO_DISP-TOT|, tempoTotale(DAY, TOT), disponibilita(DAY, TEMPO_DISP).
 % mediaDelta(MEDIA) :- DELTA = #sum{D, DAY : deltaGiorno(DAY, D)}, N_GIORNI = #count{DAY : disponibilita(DAY, _)}, MEDIA = DELTA / N_GIORNI.
@@ -72,7 +73,7 @@ tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*S
 
 % Da usare fattori utilità
 
-
+% mediaUtilita(MEDIA_FU_SUPERIORE) :- MEDIA_FU_SUPERIORE = ,MEDIA_FU_SUPERIORE < 6. % da fare
 
 
 % vincolo varietà
@@ -92,9 +93,9 @@ tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*S
 
 #show esegui/14.
 % #show next_level/2.
-#show countStrumenti/2.
+% #show countStrumenti/2.
 #show countEs/1.
-#show tempoTotale/2.
+% #show tempoTotale/2.
 % #show deltaGiorno/2.
 % #show mediaDelta/1.
 % #show nGiorni/1.
