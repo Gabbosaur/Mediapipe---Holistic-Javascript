@@ -3,9 +3,9 @@
 % variante_esercizio(id, nome_esercizio, categoria_esercizio, livello_ramo, n_rep, n_serie, durata_rep, durata_isometria, pesi_extra, strumento, tempo_riposo).
 
 % input utente
-livello_attuale(s,5). % livello attuale dell'utente (categoria livello, livello_ramo)
+livello_attuale(b,2). % livello attuale dell'utente (categoria livello, livello_ramo)
 disponibilita(1, 1800). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
-disponibilita(3, 1500). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
+disponibilita(3, 2000). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
 % disponibilita(5, 1000). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
 % disponibilita(6, 1600).
 % il form compilato dall'utente produrrà questi input_performance, in base agli attrezzi di supporto (pesi extra e bande elastiche)

@@ -25,8 +25,8 @@
 % Usato per stabilire una continuità tra il numero dei livelli
 next_level(X,Z) :- esegui(_,_,_,_,_,X,_,_,_,_,_,_,_,_), X = Z-1, #false : X < Y, esegui(_,_,_,_,_,Y,_,_,_,_,_,_,_,_), Y < Z; esegui(_,_,_,_,_,Z,_,_,_,_,_,_,_,_), X < Z.
 
-% % se livello attuale è diverso a 1 (diverso da b1), cancella gli answer che hanno 0 next_level.
-% :- livello_attuale(_,Livello_ramo), Livello_ramo != 1, #count{X,Y : next_level(X,Y)} = 0.
+% se livello attuale è diverso a 1 (diverso da b1), cancella gli answer che hanno 0 next_level.
+:- livello_attuale(_,Livello_ramo), Livello_ramo != 1, #count{X,Y : next_level(X,Y)} = 0.
 % da cancellare probabilmente.
 
 % % cancella gli answers che hanno 2 o più next_level(_,_).
