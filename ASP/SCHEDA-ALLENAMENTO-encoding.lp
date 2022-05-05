@@ -1,14 +1,14 @@
 % Generazione di answer sets per categoria base
-{esegui(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE, CL, LR, REP+PR, SERIE+PS, DR, DI, PESI+PP, STRUMENTO, TR+PTR, DAY) :  esercizio(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE), variante_esercizio(_, NOME_ESERCIZIO, CL, LR, REP, SERIE, DR, DI, PESI, STRUMENTO, TR), input_performance_base(PR, PS, PTR, PP), disponibilita(DAY, _)} :- variante_esercizio(_, _, CL, _, _, _, _, _, _, _, _), CL = b.
+{esegui(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE, CL, LR, REP+PR, SERIE+PS, DR, DI, PESI, STRUMENTO, TR+PTR, DAY) :  esercizio(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE), variante_esercizio(_, NOME_ESERCIZIO, CL, LR, REP, SERIE, DR, DI, PESI, STRUMENTO, TR), input_performance_base(PR, PS, PTR), disponibilita(DAY, _)} :- variante_esercizio(_, _, CL, _, _, _, _, _, _, _, _), CL = b.
 
 % Generazione di answer sets per categoria skills
-{esegui(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE, CL, LR, REP+PR, SERIE+PS, DR, DI, PESI+PP, STRUMENTO, TR+PTR, DAY) :  esercizio(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE), variante_esercizio(_, NOME_ESERCIZIO, CL, LR, REP, SERIE, DR, DI, PESI, STRUMENTO, TR), input_performance_skills(PR, PS, PTR, PP), disponibilita(DAY, _)} :- variante_esercizio(_, _, CL, _, _, _, _, _, _, _, _), CL = s.
+{esegui(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE, CL, LR, REP+PR, SERIE+PS, DR, DI, PESI, STRUMENTO, TR+PTR, DAY) :  esercizio(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE), variante_esercizio(_, NOME_ESERCIZIO, CL, LR, REP, SERIE, DR, DI, PESI, STRUMENTO, TR), input_performance_skills(PR, PS, PTR), disponibilita(DAY, _)} :- variante_esercizio(_, _, CL, _, _, _, _, _, _, _, _), CL = s.
 
 % Generazione di answer sets per categoria endurance
-{esegui(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE, CL, LR, REP+PR, SERIE+PS, DR, DI, PESI+PP, STRUMENTO, TR+PTR, DAY) :  esercizio(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE), variante_esercizio(_, NOME_ESERCIZIO, CL, LR, REP, SERIE, DR, DI, PESI, STRUMENTO, TR), input_performance_endurance(PR, PS, PTR, PP), disponibilita(DAY, _)} :- variante_esercizio(_, _, CL, _, _, _, _, _, _, _, _), CL = e.
+{esegui(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE, CL, LR, REP+PR, SERIE+PS, DR, DI, PESI, STRUMENTO, TR+PTR, DAY) :  esercizio(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE), variante_esercizio(_, NOME_ESERCIZIO, CL, LR, REP, SERIE, DR, DI, PESI, STRUMENTO, TR), input_performance_endurance(PR, PS, PTR), disponibilita(DAY, _)} :- variante_esercizio(_, _, CL, _, _, _, _, _, _, _, _), CL = e.
 
 % Generazione di answer sets per categoria weighted
-{esegui(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE, CL, LR, REP+PR, SERIE+PS, DR, DI, PESI+PP, STRUMENTO, TR+PTR, DAY) :  esercizio(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE), variante_esercizio(_, NOME_ESERCIZIO, CL, LR, REP, SERIE, DR, DI, PESI, STRUMENTO, TR), input_performance_weighted(PR, PS, PTR, PP), disponibilita(DAY, _)} :- variante_esercizio(_, _, CL, _, _, _, _, _, _, _, _), CL = w.
+{esegui(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE, CL, LR, REP+PR, SERIE+PS, DR, DI, PESI, STRUMENTO, TR+PTR, DAY) :  esercizio(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE), variante_esercizio(_, NOME_ESERCIZIO, CL, LR, REP, SERIE, DR, DI, PESI, STRUMENTO, TR), input_performance_weighted(PR, PS, PTR), disponibilita(DAY, _)} :- variante_esercizio(_, _, CL, _, _, _, _, _, _, _, _), CL = w.
 
 
 % vincoli
@@ -56,6 +56,11 @@ countEs(CE) :- CE = #count{NOME_ESERCIZIO, Strumento, DAY : esegui(NOME_ESERCIZI
 % compara il numero totale degli esercizi con la somma degli esercizi che vanno svolti con i nostri strumenti, e cancella gli answer set nel caso i risultati siano diversi.
 :- TOTAL = #sum{CS : countStrumenti(CS, _)}, countEs(CE), TOTAL != CE.
 
+% Filtro degli strumenti Extra. @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ DOCUMENTARE. Fatto!
+:- not strumento_extra("weights"), strumento_extra("elastic band"), esegui(_,_,_,_,_,_,_,_,_,_,SE,_,_,_), SE > 0.
+:- not strumento_extra("elastic band"), strumento_extra("weights"), esegui(_,_,_,_,_,_,_,_,_,_,SE,_,_,_), SE < 0.
+
+
 
 % Calcolo tempo totale dell'allenamento per il determinato giorno.
 tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*SERIE : esegui(_,_,_,_,_,_,REP,SERIE,DURATA_REP,DURATA_ISO,_,_,TR,DAY)}, disponibilita(DAY, _), warmup_time(WT), TOT = T+WT.
@@ -95,6 +100,7 @@ tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*S
 % #show next_level/2.
 % #show countStrumenti/2.
 #show countEs/1.
+#show warmup_time/1.
 % #show tempoTotale/2.
 % #show deltaGiorno/2.
 % #show mediaDelta/1.

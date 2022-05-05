@@ -9,16 +9,27 @@ from pyfiglet import figlet_format
 
 problem_instance = "SCHEDA-ALLENAMENTO-instance.lp"
 problem_encoding = "SCHEDA-ALLENAMENTO-encoding.lp"
-stream = os.popen("clingo "+ problem_instance + " " + problem_encoding + " --quiet=1")
+stream = os.popen("clingo "+ problem_instance + " " + problem_encoding + " --quiet=1 --time-limit=30")
 
-print("Running and solving...")
+print("Running and solving... (it might take some time)")
 output_string = stream.read()
+output_string_T = output_string
+
 # print(output_string)
 print("Plan found!")
 pattern = re.compile(r'esegui\((.*?)\)')
 x = pattern.findall(output_string)
 
 # print(x)
+
+# Get warmup time
+warmup_time_pattern = re.compile(r'warmup_time\((.*?)\)')
+y = warmup_time_pattern.findall(output_string_T)
+warmup_time = int(y[0])
+
+m, s = divmod(warmup_time, 60)
+h, m = divmod(m, 60)
+
 
 @dataclass
 class Esercizio:
@@ -104,8 +115,10 @@ for i in data:
 		print('\n'+str(days[new_day-1]))
 		day = new_day
 		print("---------------")
-		print("{: >35}".format("Warm-up")) # si potrebbe aggiungere anche l'atom di warmup time
+		print("{: >35}".format("Warm-up") + "{: >10}".format(m) + "m" + "{: >2}".format(s) + "s") # si potrebbe aggiungere anche l'atom di warmup time
 
 
 	print("{: >35}".format(i['nome_esercizio']) + "{: >3}".format(i['n_serie']) + "x" + "{:<2}".format(i['n_rep']) + "{: >7}".format(i['tempo_riposo'])+"s" + "{:>30}".format(i['strumento']))
-	
+
+# in qualche modo si può prendere l'output che ha prodotto anche se non ha finito trovando l'ottimo?
+# così da limitare il tempo con --time-limit=60 e prendere l'ultimo answer set prodotto.

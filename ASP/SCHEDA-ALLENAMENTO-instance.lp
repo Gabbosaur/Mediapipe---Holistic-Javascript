@@ -4,16 +4,17 @@
 
 % input utente
 livello_attuale(b,2). % livello attuale dell'utente (categoria livello, livello_ramo)
-disponibilita(1, 1800). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
-disponibilita(3, 2000). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
+disponibilita(2, 1500). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
+disponibilita(4, 1200). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
+% disponibilita(6, 1800). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
 % disponibilita(5, 1000). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
 % disponibilita(6, 1600).
 % il form compilato dall'utente produrrà questi input_performance, in base agli attrezzi di supporto (pesi extra e bande elastiche)
 % i valori in input_performance verranno bilanciati di conseguenza.
-input_performance_base(2,5,30, 0). % n_rep, n_serie, tempo riposo, pesi extra. (Ricalibrare poi in Python il file di output)
-input_performance_skills(2,1,-10, 0). % n_rep, n_serie, tempo riposo, pesi extra. (Ricalibrare poi in Python il file di output)
-input_performance_endurance(2,1,-10, 0). % n_rep, n_serie, tempo riposo, pesi extra. (Ricalibrare poi in Python il file di output)
-input_performance_weighted(2,1,-10, 0). % n_rep, n_serie, tempo riposo, pesi extra. (Ricalibrare poi in Python il file di output)
+input_performance_base(0,2,30). % n_rep, n_serie, tempo riposo. (Ricalibrare poi in Python il file di output)
+input_performance_skills(2,1,-10). % n_rep, n_serie, tempo riposo. (Ricalibrare poi in Python il file di output)
+input_performance_endurance(2,1,-10). % n_rep, n_serie, tempo riposo. (Ricalibrare poi in Python il file di output)
+input_performance_weighted(2,1,-10). % n_rep, n_serie, tempo riposo. (Ricalibrare poi in Python il file di output)
 %input performance... +-k dove k è rep o serie in più o meno
 
 % ragionare su questo atom per quando avremo rep negativi
@@ -25,11 +26,17 @@ warmup_time(600). % secondi di tempo di riscaldamento
 strumento("corpo libero").
 % strumento("portable parallel bars").
 strumento("portable parallel bars").
+strumento("pullup bar").
+
+% DA INSERIRE NEL DOCUMENTO @@@@@@@@@@@@@@@@@@@@@@@@@@@ Fatto!
+strumento_extra("elastic band").
+strumento_extra("weights").
+
 
 
 % BOZZA 1 (easy)
 % Preferenza gruppo muscolare ("parte_superiore", "core", "parte_inferiore")
-pref_gm("core").
+pref_gm("core"). % @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ TODO: mancano vincoli delle preferenze muscolari
 
 
 % BOZZA 2 (hard)
@@ -80,7 +87,7 @@ esercizio("crunches",0,6,0).
 variante_esercizio(20, "crunches", b,1,3,1,2,0,0,"corpo libero",30).
 
 esercizio("barchetta tuck",1,5,2).
-variante_esercizio(21,"barchetta tuck",b,1,0,1,0,10,0,"corpo libero",30).
+variante_esercizio(21,"barchetta tuck",b,1,1,1,0,10,0,"corpo libero",30).
 % % CAMBIARE NEL CASO TUTTI GLI ES ISOMETRIE LE REP A 0.
 
 
