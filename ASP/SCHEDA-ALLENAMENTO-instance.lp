@@ -3,9 +3,9 @@
 % variante_esercizio(id, nome_esercizio, categoria_esercizio, livello_ramo, n_rep, n_serie, durata_rep, durata_isometria, pesi_extra, strumento, tempo_riposo).
 
 % input utente
-livello_attuale(b,2). % livello attuale dell'utente (categoria livello, livello_ramo)
-disponibilita(2, 1500). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
-disponibilita(4, 1200). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
+livello_attuale(b,3). % livello attuale dell'utente (categoria livello, livello_ramo)
+disponibilita(1, 1500). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
+% disponibilita(4, 1200). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
 % disponibilita(6, 1800). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
 % disponibilita(5, 1000). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
 % disponibilita(6, 1600).
@@ -27,6 +27,8 @@ strumento("corpo libero").
 % strumento("portable parallel bars").
 strumento("portable parallel bars").
 strumento("pullup bar").
+strumento("parallettes").
+strumento("rings").
 
 % DA INSERIRE NEL DOCUMENTO @@@@@@@@@@@@@@@@@@@@@@@@@@@ Fatto!
 strumento_extra("elastic band").
@@ -34,18 +36,15 @@ strumento_extra("weights").
 
 
 
-% BOZZA 1 (easy)
+% BOZZA 1 (easy) <-- Implementiamo questo approccio
 % Preferenza gruppo muscolare ("parte_superiore", "core", "parte_inferiore")
-pref_gm("core"). % @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ TODO: mancano vincoli delle preferenze muscolari
+pref_gm("parte_superiore"). % Ce ne deve essere solo 1 di preferenza.
 
 
 % BOZZA 2 (hard)
 % Preferenza gruppo muscolare ("parte_superiore", "core", "parte_inferiore")
 % pref_gm("parte_superiore", 10, "core", 8, "parte_inferiore", 1).
 
-
-% haveElasticBand.
-% haveWeights.
 
 
 % Livello B1

@@ -66,7 +66,18 @@ countEs(CE) :- CE = #count{NOME_ESERCIZIO, Strumento, DAY : esegui(NOME_ESERCIZI
 tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*SERIE : esegui(_,_,_,_,_,_,REP,SERIE,DURATA_REP,DURATA_ISO,_,_,TR,DAY)}, disponibilita(DAY, _), warmup_time(WT), TOT = T+WT.
 
 % Prende l'answer set che si avvicina di più ai tempi disponibili dati in input dall'utente.
-#minimize { |TEMPO_DISP-TOT|@1,DAY : tempoTotale(DAY, TOT), disponibilita(DAY, TEMPO_DISP) }.
+#minimize { |TEMPO_DISP-TOT|@2,DAY : tempoTotale(DAY, TOT), disponibilita(DAY, TEMPO_DISP) }.
+
+
+
+% Prendiamo gli answer set in cui prevalgono gli esercizi appartanente al gruppo muscolare che l'utente preferisce.
+mediaFU_gm(MEDIA) :- pref_gm("parte_superiore"), SUM = #sum{FU_SUP, NOME_ESERCIZIO, DAY : esegui(NOME_ESERCIZIO,FU_SUP,_,_,_,_,_,_,_,_,_,_,_,DAY)}, countEs(CE), MEDIA = SUM/CE, CE != 0.
+mediaFU_gm(MEDIA) :- pref_gm("core"), SUM = #sum{FU_CORE, NOME_ESERCIZIO, DAY : esegui(NOME_ESERCIZIO,_,FU_CORE,_,_,_,_,_,_,_,_,_,_,DAY)}, countEs(CE), MEDIA = SUM/CE, CE != 0.
+mediaFU_gm(MEDIA) :- pref_gm("parte_inferiore"), SUM = #sum{FU_INF, NOME_ESERCIZIO, DAY : esegui(NOME_ESERCIZIO,_,_,FU_INF,_,_,_,_,_,_,_,_,_,DAY)}, countEs(CE), MEDIA = SUM/CE, CE != 0.
+#maximize { MEDIA_FU@1 : mediaFU_gm(MEDIA_FU) }.
+
+
+
 
 % #minimize { VAR@2 : DELTA_SUM = #sum{D, DAY : deltaGiorno(DAY, D)}, N_GIORNI = #count{DAY : disponibilita(DAY, _)}, MEDIA = DELTA_SUM / N_GIORNI, NUM = #sum{(DELTA - MEDIA)**2, DAY : deltaGiorno(DAY, DELTA), mediaDelta(MEDIA)}, nGiorni(N_GIORNI), VAR = NUM / N_GIORNI}
 
@@ -106,5 +117,6 @@ tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*S
 % #show mediaDelta/1.
 % #show nGiorni/1.
 % #show varianzaDelta/1.
+#show mediaFU_gm/1.
 
 % #show test/3.

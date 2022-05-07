@@ -3,17 +3,38 @@ import os, re, json
 
 import sys
 from colorama import init
+from sqlalchemy import null
 init(strip=not sys.stdout.isatty()) # strip colors if stdout is redirected
 from termcolor import cprint
 from pyfiglet import figlet_format
 
+import argparse
+parser = argparse.ArgumentParser(description = 'Process display arguments')
+parser.add_argument('-o', '--optimal', nargs = '?', const = True, default = False)
+args = parser.parse_args()
+
 problem_instance = "SCHEDA-ALLENAMENTO-instance.lp"
 problem_encoding = "SCHEDA-ALLENAMENTO-encoding.lp"
-stream = os.popen("clingo "+ problem_instance + " " + problem_encoding + " --quiet=1 --time-limit=30")
+
+if args.optimal:
+	# Runna il programma SENZA time-limit e cerca finché non trova l'ottimo
+	print("Looking for optimal solution...")
+	stream = os.popen("clingo "+ problem_instance + " " + problem_encoding + " --quiet=1")
+else:
+	print("Looking for a solution in 30 seconds...")
+	stream = os.popen("clingo "+ problem_instance + " " + problem_encoding + " --time-limit=30 --quiet=1")
 
 print("Running and solving... (it might take some time)")
 output_string = stream.read()
 output_string_T = output_string
+
+
+# Print isOptimalSolution
+index = output_string.find("Optimum    : ")
+if output_string[index+13] == 'y':
+	isOptimalSolution = True
+else:
+	isOptimalSolution = False
 
 # print(output_string)
 print("Plan found!")
@@ -108,6 +129,7 @@ print("Here's your weekly...\n==================================================
 cprint(figlet_format('Workout plan', font='ogre'),
        'yellow', attrs=['bold'])
 
+print("{:>51}".format("") + "... optimal!" if isOptimalSolution == True else "{:>48}".format("") + "... suboptimal!")
 
 for i in data:
 	new_day = int(i['day'])
@@ -115,10 +137,14 @@ for i in data:
 		print('\n'+str(days[new_day-1]))
 		day = new_day
 		print("---------------")
-		print("{: >35}".format("Warm-up") + "{: >10}".format(m) + "m" + "{: >2}".format(s) + "s") # si potrebbe aggiungere anche l'atom di warmup time
+		print("{: >35}".format("Warm-up") + "{: >18}".format(m) + "m" + "{: >2}".format(s) + "s") # si potrebbe aggiungere anche l'atom di warmup time
 
 
-	print("{: >35}".format(i['nome_esercizio']) + "{: >3}".format(i['n_serie']) + "x" + "{:<2}".format(i['n_rep']) + "{: >7}".format(i['tempo_riposo'])+"s" + "{:>30}".format(i['strumento']))
+	if i['durata_isometria'] == '0':
+		durata_iso = "-"
+	else:
+		durata_iso = i['durata_isometria']+'s'
+	print("{: >35}".format(i['nome_esercizio']) + "{: >3}".format(i['n_serie']) + "x" + "{:<2}".format(i['n_rep']) + "{:>5}".format(durata_iso) + "{: >10}".format(i['tempo_riposo'])+"s" + "{:>30}".format(i['strumento']))
 
 # in qualche modo si può prendere l'output che ha prodotto anche se non ha finito trovando l'ottimo?
 # così da limitare il tempo con --time-limit=60 e prendere l'ultimo answer set prodotto.
