@@ -69,7 +69,7 @@ tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*S
 #minimize { |TEMPO_DISP-TOT|@2,DAY : tempoTotale(DAY, TOT), disponibilita(DAY, TEMPO_DISP) }.
 
 
-
+% @@@@@@@@@@@@@ DOCUMENTARE QUESTA PARTE NUOVA
 % Prendiamo gli answer set in cui prevalgono gli esercizi appartanente al gruppo muscolare che l'utente preferisce.
 mediaFU_gm(MEDIA) :- pref_gm("parte_superiore"), SUM = #sum{FU_SUP, NOME_ESERCIZIO, DAY : esegui(NOME_ESERCIZIO,FU_SUP,_,_,_,_,_,_,_,_,_,_,_,DAY)}, countEs(CE), MEDIA = SUM/CE, CE != 0.
 mediaFU_gm(MEDIA) :- pref_gm("core"), SUM = #sum{FU_CORE, NOME_ESERCIZIO, DAY : esegui(NOME_ESERCIZIO,_,FU_CORE,_,_,_,_,_,_,_,_,_,_,DAY)}, countEs(CE), MEDIA = SUM/CE, CE != 0.
@@ -117,6 +117,6 @@ mediaFU_gm(MEDIA) :- pref_gm("parte_inferiore"), SUM = #sum{FU_INF, NOME_ESERCIZ
 % #show mediaDelta/1.
 % #show nGiorni/1.
 % #show varianzaDelta/1.
-#show mediaFU_gm/1.
+% #show mediaFU_gm/1.
 
 % #show test/3.
