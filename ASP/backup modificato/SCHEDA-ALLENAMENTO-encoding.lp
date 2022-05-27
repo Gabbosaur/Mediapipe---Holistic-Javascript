@@ -63,10 +63,7 @@ countEs(CE) :- CE = #count{NOME_ESERCIZIO, Strumento, DAY : esegui(NOME_ESERCIZI
 
 
 % Calcolo tempo totale dell'allenamento per il determinato giorno.
-% esegui(NOME_ESERCIZIO, FU_SUPERIORE, FU_CORE, FU_INFERIORE, CL, LR, REP+PR, SERIE+PS, DR, DI, PESI, STRUMENTO, TR+PTR, DAY)
-tempoTotale(DAY, TOT):- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*SERIE, NE : esegui(NE,_,_,_,_,_,REP,SERIE,DURATA_REP,DURATA_ISO,_,_,TR,DAY)}, disponibilita(DAY, _), warmup_time(WT), TOT = T+WT.
-% stampaT(T):- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*SERIE, NE : esegui(NE,_,_,_,_,_,REP,SERIE,DURATA_REP,DURATA_ISO,_,_,TR,DAY)}, disponibilita(DAY, _), warmup_time(WT).
-
+tempoTotale(DAY, TOT) :- T = #sum{DURATA_REP*REP*SERIE + DURATA_ISO*SERIE + TR*SERIE, NE : esegui(NE,_,_,_,_,_,REP,SERIE,DURATA_REP,DURATA_ISO,_,_,TR,DAY)}, disponibilita(DAY, _), warmup_time(WT), TOT = T+WT.
 
 % Prende l'answer set che si avvicina di più ai tempi disponibili dati in input dall'utente.
 #minimize { |TEMPO_DISP-TOT|@3,DAY : tempoTotale(DAY, TOT), disponibilita(DAY, TEMPO_DISP) }.
@@ -84,43 +81,6 @@ mediaFU_gm(MEDIA) :- pref_gm("parte_inferiore"), SUM = #sum{FU_INF, NOME_ESERCIZ
 
 
 
-
-% #minimize { VAR@2 : DELTA_SUM = #sum{D, DAY : deltaGiorno(DAY, D)}, N_GIORNI = #count{DAY : disponibilita(DAY, _)}, MEDIA = DELTA_SUM / N_GIORNI, NUM = #sum{(DELTA - MEDIA)**2, DAY : deltaGiorno(DAY, DELTA), mediaDelta(MEDIA)}, nGiorni(N_GIORNI), VAR = NUM / N_GIORNI}
-
-% deltaGiorno(DAY, DELTA) :- DELTA = |TEMPO_DISP-TOT|, tempoTotale(DAY, TOT), disponibilita(DAY, TEMPO_DISP).
-% mediaDelta(MEDIA) :- DELTA = #sum{D, DAY : deltaGiorno(DAY, D)}, N_GIORNI = #count{DAY : disponibilita(DAY, _)}, MEDIA = DELTA / N_GIORNI.
-% nGiorni(N_GIORNI) :- N_GIORNI = #count{DAY : disponibilita(DAY, _)}.
-% varianzaDelta(VAR) :- NUM = #sum{(DELTA - MEDIA)**2, DAY : deltaGiorno(DAY, DELTA), mediaDelta(MEDIA)}, nGiorni(N_GIORNI), VAR = NUM / N_GIORNI.
-
-
-% Da usare fattori utilità
-
-% mediaUtilita(MEDIA_FU_SUPERIORE) :- MEDIA_FU_SUPERIORE = ,MEDIA_FU_SUPERIORE < 6. % da fare
-
-
-
-
-
-
-
-%% TODOS
-
-% DA VALUTARE calcolare l'intensità se la sessione giornaliera è pesante.
-
-% DA VALUTARE vedere se abbiamo dei giorni vicini con next_level, se sì, verificare che non abbiano un carico alto.
-
-
 #show esegui/14.
-% #show next_level/2.
-% #show countStrumenti/2.
 #show countEs/1.
 #show warmup_time/1.
-#show tempoTotale/2.
-% #show deltaGiorno/2.
-% #show mediaDelta/1.
-% #show nGiorni/1.
-% #show varianzaDelta/1.
-% #show mediaFU_gm/1.
-% #show stampaT/1.
-
-% #show test/3.

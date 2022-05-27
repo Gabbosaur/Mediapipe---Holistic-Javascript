@@ -322,14 +322,14 @@ def calculate_feature_alzateLaterali(X):
 
 
 def confusionMatrix(y_test, y_pred, actions):
-	print("\nCONFUSION MATRIX\n")
+	print("\n--- CONFUSION MATRIX ---\n")
 
 	# print(y_pred)
 	# print(y_pred.argmax(axis=1))
 	
 	# Model Accuracy, how often is the classifier correct?
 	# print("metrics.accuracy score 1D (non tiene conto dei null):\t",metrics.accuracy_score(y_test.argmax(axis=1), y_pred.argmax(axis=1)))
-	print("metrics.accuracy score normale (considera i null sbagliati) - Testing score:\t",metrics.accuracy_score(y_test, y_pred))
+	print("metrics.accuracy - Testing score:\t",metrics.accuracy_score(y_test, y_pred))
 
 	matrix = [[0 for x in range(len(actions))] for y in range(len(actions))]
 	errori = 0
@@ -357,7 +357,7 @@ def confusionMatrix(y_test, y_pred, actions):
 	mat.columns=col
 	mat.index=actions
 
-	print("numero campioni di test: "+str(len(y_pred))+"   campioni erroneamente classificati: "+str(errori) + "   campioni classificati nulli: " + str(predNull) + "\n")
+	print("Numero campioni di test: "+str(len(y_pred))+"   Campioni erroneamente classificati: "+str(errori) + "   Campioni classificati nulli: " + str(predNull) + "\n")
 	print(mat)
 
 	# print("\nmetrics.confusion_matrix")

@@ -3,53 +3,40 @@
 % variante_esercizio(id, nome_esercizio, categoria_esercizio, livello_ramo, n_rep, n_serie, durata_rep, durata_isometria, pesi_extra, strumento, tempo_riposo).
 
 % input utente
-livello_attuale(b,3). % livello attuale dell'utente (categoria livello, livello_ramo)
-disponibilita(1, 1800). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
-disponibilita(4, 2400). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
-% disponibilita(6, 1800). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
-% disponibilita(5, 1000). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
-% disponibilita(6, 1600).
+livello_attuale(b,1). % livello attuale dell'utente (categoria livello, livello_ramo)
+disponibilita(2, 1500). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
+disponibilita(4, 1200). % giorno disponibile espresso in numero, secondi dell'allenamento disponibili.
+
 % il form compilato dall'utente produrrà questi input_performance, in base agli attrezzi di supporto (pesi extra e bande elastiche)
 % i valori in input_performance verranno bilanciati di conseguenza.
-input_performance_base(0,2,30). % n_rep, n_serie, tempo riposo. (Ricalibrare poi in Python il file di output)
-input_performance_skills(2,1,-10). % n_rep, n_serie, tempo riposo. (Ricalibrare poi in Python il file di output)
-input_performance_endurance(2,1,-10). % n_rep, n_serie, tempo riposo. (Ricalibrare poi in Python il file di output)
-input_performance_weighted(2,1,-10). % n_rep, n_serie, tempo riposo. (Ricalibrare poi in Python il file di output)
+input_performance_base(2,2,60). % n_rep, n_serie, tempo riposo. (Ricalibrare poi in Python il file di output)
+input_performance_skills(2,1,30). % n_rep, n_serie, tempo riposo. (Ricalibrare poi in Python il file di output)
+input_performance_endurance(2,1,0). % n_rep, n_serie, tempo riposo. (Ricalibrare poi in Python il file di output)
+input_performance_weighted(2,1,0). % n_rep, n_serie, tempo riposo. (Ricalibrare poi in Python il file di output)
 %input performance... +-k dove k è rep o serie in più o meno
 
-% ragionare su questo atom per quando avremo rep negativi
-% mettere il tempo di esecuzione per i vari esercizi? per quando si ottimizza i tempi?
 
 warmup_time(600). % secondi di tempo di riscaldamento
 
 % % check strumenti
 strumento("corpo libero").
-% strumento("portable parallel bars").
 strumento("portable parallel bars").
 strumento("pullup bar").
 strumento("parallettes").
 strumento("rings").
 
-% DA INSERIRE NEL DOCUMENTO @@@@@@@@@@@@@@@@@@@@@@@@@@@ Fatto!
+% check strumenti di supporto extra
 strumento_extra("elastic band").
 strumento_extra("weights").
 
 
-
-% BOZZA 1 (easy) <-- Implementiamo questo approccio
-% Preferenza gruppo muscolare ("parte_superiore", "core", "parte_inferiore")
-pref_gm("parte_superiore"). % Ce ne deve essere solo 1 di preferenza.
-
-
-% BOZZA 2 (hard)
-% Preferenza gruppo muscolare ("parte_superiore", "core", "parte_inferiore")
-% pref_gm("parte_superiore", 10, "core", 8, "parte_inferiore", 1).
+% Preferenza gruppo muscolare
+pref_gm("parte_superiore").
 
 
 
 % Livello B1
 esercizio("pushup rialzato prona",7,3,1).
-% AGGIUNGERE DURATA_REP PER OGNI VARIANTE
 variante_esercizio(1, "pushup rialzato prona", b, 1, 3, 1, 3, 0, 0, "corpo libero", 30).
 variante_esercizio(2, "pushup rialzato prona", b, 1, 3, 1, 3, 0, 0, "portable parallel bars", 30).
 variante_esercizio(3, "pushup rialzato prona", b, 1, 3, 1, 3, 0, 0, "fixed parallel bars", 30).
@@ -59,7 +46,7 @@ variante_esercizio(5, "pushup rialzato neutro", b, 1, 3, 1, 3, 0, 0, "corpo libe
 variante_esercizio(6, "pushup rialzato neutro", b, 1, 3, 1, 3, 0, 0, "portable parallel bars", 30).
 variante_esercizio(7, "pushup rialzato neutro", b, 1, 3, 1, 3, 0, 0, "fixed parallel bars", 30).
 
-esercizio("alzate laterali",6,1,1). % valutare un attimino i fattori utilità per i vari esercizi
+esercizio("alzate laterali",6,1,1).
 variante_esercizio(9,"alzate laterali",b,1,3,1,3,0,0,"corpo libero",30).
 
 esercizio("biceps curl",7,1,1).
@@ -87,8 +74,6 @@ variante_esercizio(20, "crunches", b,1,3,1,2,0,0,"corpo libero",30).
 
 esercizio("barchetta tuck",1,5,2).
 variante_esercizio(21,"barchetta tuck",b,1,1,1,0,10,0,"corpo libero",30).
-% % CAMBIARE NEL CASO TUTTI GLI ES ISOMETRIE LE REP A 0.
-
 
 esercizio("half squat",0,2,6).
 variante_esercizio(22, "half squat", b, 1, 3, 1, 2, 0, 0, "corpo libero", 30).
@@ -100,8 +85,6 @@ esercizio("calf raises",0,1,6).
 variante_esercizio(1026, "calf raises", b, 1, 3, 1, 1, 0, 0, "corpo libero", 30).
 
 
-
-% % Range? Livelli base no, ma livelli alti vanno bene mettere un range di rep/serie.
 
 
 % % Livello B2
@@ -190,7 +173,6 @@ variante_esercizio(59,"bycicle crunches",b,2,10,1,1,0,0,"corpo libero",30).
 
 
 % % Livello B3
-
 
 esercizio("parallel dips",8,2,0).
 variante_esercizio(60,"parallel dips",b,3,3,1,3,0,0,"portable parallel bars",30).
@@ -296,8 +278,6 @@ variante_esercizio(115,"pike pushup",b,3,3,1,2,0,0,"parallettes",30).
 
 
 
-
-
 % Livello S4
 esercizio("explosive pullups",8,3,1).
 variante_esercizio(200,"explosive pullups",s,4,3,1,3,0,0,"pullup bar",30).
@@ -360,15 +340,9 @@ esercizio("negative muscle up",7,4,3).
 variante_esercizio(242,"negative muscle up",s,4,3,3,5,0,0,"pullup bar",30).
 
 
-
-
-
-
-
-
-
-
-
+% Pistol squat
+esercizio("assisted pistol squat",1,4,8).
+variante_esercizio(250,"assisted pistol squat",s,4,3,3,3,0,0,"corpo libero",30).
 
 
 
@@ -404,7 +378,6 @@ variante_esercizio(284,"adv tuck back lever",s,5,1,3,0,5,0,"rings",30).
 variante_esercizio(285,"adv tuck back lever",s,5,1,3,0,5,0,"portable parallel bars",30).
 variante_esercizio(286,"adv tuck back lever",s,5,1,3,0,5,0,"fixed parallel bars",30).
 variante_esercizio(287,"adv tuck back lever",s,5,1,3,0,5,0,"pullup bar",30).
-
 
 esercizio("adv tuck back lever pulse",7,4,1).
 variante_esercizio(288,"adv tuck back lever pulse",s,5,3,3,3,0,0,"portable parallel bars",30).
@@ -448,12 +421,14 @@ variante_esercizio(315,"handstand pushup back to wall",s,5,3,1,3,0,0,"corpo libe
 esercizio("band assisted muscle up",8,4,1).
 variante_esercizio(320,"band assisted muscle up",s,5,1,1,5,0,0,"pullup bar",30).
 
-
-% % % Siccome sono lvl S5, negli answer set mi dà gli esercizi di S5 e B3. Probabile per un certo vincolo che obbliga solo B3 (?)
+% Pistol squat
+esercizio("pistol squat",1,4,9).
+variante_esercizio(350,"pistol squat",s,5,2,3,3,0,0,"corpo libero",30).
 
 
 
 % % Livello S6
+
 % Muscle up
 esercizio("muscle up",8,4,1).
 variante_esercizio(380,"muscle up",s,6,1,1,5,0,0,"pullup bar",30).
@@ -463,11 +438,11 @@ variante_esercizio(381,"ring muscle up",s,6,1,1,5,0,0,"rings",30).
 
 
 
+
 % Livello E4
 esercizio("end pullups",7,3,1).
 variante_esercizio(400,"end pullups",e,4,5,1,2,0,0,"pullup bar",20).
 variante_esercizio(401,"end pullups",e,4,5,1,2,0,0,"rings",20).
-
 esercizio("end dips",7,3,1).
 variante_esercizio(410,"end dips",e,4,7,1,2,0,0,"fixed parallel bars",20).
 variante_esercizio(411,"end dips",e,4,7,1,2,0,0,"portable parallel bars",20).
@@ -475,6 +450,7 @@ variante_esercizio(411,"end dips",e,4,7,1,2,0,0,"portable parallel bars",20).
 % Livello E5
 
 % Livello E6
+
 
 
 % Livello W4

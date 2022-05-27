@@ -27,6 +27,10 @@ from sklearn.tree import DecisionTreeClassifier # Import Decision Tree Classifie
 from sklearn.model_selection import train_test_split # Import train_test_split function
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score as AS
+from sklearn.metrics import f1_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import precision_score
+
 from sklearn import tree
 
 from gtts import gTTS
@@ -154,11 +158,28 @@ math_module.confusionMatrix(y_test, y_pred_DT, actions)
 
 # ---------- carico miglior modello
 print("\n\nBest HP training: \n")
+print("-------- DECISION TREE --------")
 best_model_decisionTree=math_module.load_model('decision_tree.sav')
 cross_score = cross_val_score(best_model_decisionTree, X_train, y_train, cv=5)
-print("best score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+print("Cross val score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+
+print("\n-------------------------------------------\n")
+
 # Predict the response for test dataset
 y_pred = best_model_decisionTree.predict(X_test)
+
+recallW = recall_score(y_test, y_pred, average='weighted')
+precisionW = precision_score(y_test, y_pred, average='weighted')
+f_scoreW = f1_score(y_true=y_test, y_pred=y_pred, average='weighted')
+
+recall = recall_score(y_test, y_pred, average=None)
+precision = precision_score(y_test, y_pred, average=None)
+f_score = f1_score(y_true=y_test, y_pred=y_pred, average=None)
+
+print("Recall score:\t\t "+ str(recall) + "\tweighted average:\t" + str(recallW))
+print("Precision score:\t "+ str(precision) + "\tweighted average:\t" + str(precisionW))
+print("F1 score:\t\t "+ str(f_score) + "\tweighted average:\t" + str(f_scoreW))
+
 math_module.confusionMatrix(y_test, y_pred, actions)
 
 
@@ -187,12 +208,31 @@ math_module.confusionMatrix(y_test, y_pred_RF, actions)
 
 
 # ---------- carico miglior modello
-print("\n\nBest HP training: \n")
+print("\n-------- RANDOM FOREST ---------")
+
+# print("\n\nBest HP training: \n")
 best_model_random_forest=math_module.load_model('random_forest.sav')
 cross_score = cross_val_score(best_model_random_forest, X_train, y_train, cv=5)
-print("best score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+print("Cross val score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+
+print("\n-------------------------------------------\n")
+
 # Predict the response for test dataset
 y_pred = best_model_random_forest.predict(X_test)
+
+recallW = recall_score(y_test, y_pred, average='weighted')
+precisionW = precision_score(y_test, y_pred, average='weighted')
+f_scoreW = f1_score(y_true=y_test, y_pred=y_pred, average='weighted')
+
+recall = recall_score(y_test, y_pred, average=None)
+precision = precision_score(y_test, y_pred, average=None)
+f_score = f1_score(y_true=y_test, y_pred=y_pred, average=None)
+
+print("Recall score:\t\t "+ str(recall) + "\tweighted average:\t" + str(recallW))
+print("Precision score:\t "+ str(precision) + "\tweighted average:\t" + str(precisionW))
+print("F1 score:\t\t "+ str(f_score) + "\tweighted average:\t" + str(f_scoreW))
+
+
 math_module.confusionMatrix(y_test, y_pred, actions)
 
 
@@ -215,12 +255,29 @@ math_module.confusionMatrix(y_test, y_pred_SVM, actions)
 
 
 # ----------  carico miglior modello
-print("\n\nBest HP training: \n")
+print("\n-------- SVM ---------")
+# print("\n\nBest HP training: \n")
 best_model_SVM=math_module.load_model('svm.sav')
 cross_score = cross_val_score(best_model_SVM, X_train, math_module.oneHot_to_1D(y_train), cv=5)
-print("best score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+print("Cross val score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+
+print("\n-------------------------------------------\n")
+
 # Predict the response for test dataset
 y_pred = best_model_SVM.predict(X_test)
+
+recallW = recall_score(math_module.oneHot_to_1D(y_test), y_pred, average='weighted')
+precisionW = precision_score(math_module.oneHot_to_1D(y_test), y_pred, average='weighted')
+f_scoreW = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=y_pred, average='weighted')
+
+recall = recall_score(math_module.oneHot_to_1D(y_test), y_pred, average=None)
+precision = precision_score(math_module.oneHot_to_1D(y_test), y_pred, average=None)
+f_score = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=y_pred, average=None)
+
+print("Recall score:\t\t "+ str(recall) + "\tweighted average:\t" + str(recallW))
+print("Precision score:\t "+ str(precision) + "\tweighted average:\t" + str(precisionW))
+print("F1 score:\t\t "+ str(f_score) + "\tweighted average:\t" + str(f_scoreW))
+
 math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
@@ -242,12 +299,31 @@ math_module.confusionMatrix(y_test, y_pred_GB, actions)
 # math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 # ---------- carico miglior modello
-print("\n\nBest HP training: \n")
+print("\n-------- GRADIENT BOOSTING --------")
+
+# print("\n\nBest HP training: \n")
+
 best_model_gradient_boosting=math_module.load_model('gradient_boosting.sav')
 cross_score = cross_val_score(best_model_gradient_boosting, X_train, math_module.oneHot_to_1D(y_train), cv=5)
-print("best score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+print("Cross val score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+print("\n-------------------------------------------\n")
+
 # Predict the response for test dataset
 y_pred = best_model_gradient_boosting.predict(X_test)
+
+recallW = recall_score(math_module.oneHot_to_1D(y_test), y_pred, average='weighted')
+precisionW = precision_score(math_module.oneHot_to_1D(y_test), y_pred, average='weighted')
+f_scoreW = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=y_pred, average='weighted')
+
+recall = recall_score(math_module.oneHot_to_1D(y_test), y_pred, average=None)
+precision = precision_score(math_module.oneHot_to_1D(y_test), y_pred, average=None)
+f_score = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=y_pred, average=None)
+
+print("Recall score:\t\t "+ str(recall) + "\tweighted average:\t" + str(recallW))
+print("Precision score:\t "+ str(precision) + "\tweighted average:\t" + str(precisionW))
+print("F1 score:\t\t "+ str(f_score) + "\tweighted average:\t" + str(f_scoreW))
+
+
 math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
@@ -272,18 +348,36 @@ math_module.confusionMatrix(y_test, y_pred_XGB, actions)
 
 # ---------- carico miglior modello
 print("\n\nBest HP training: \n")
+print("\n-------- EXTREME GRADIENT BOOSTING --------")
+
 best_model_XGB=math_module.load_model('xgboost.sav')
 cross_score = cross_val_score(best_model_XGB, X_train, math_module.oneHot_to_1D(y_train), cv=5)
-print("best score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
+print("Cross val score: %f accuracy with a standard deviation of %f" % (cross_score.mean(), cross_score.std()))
 # Predict the response for test dataset
 y_pred = best_model_XGB.predict(X_test)
+
+
+print("\n-------------------------------------------\n")
+recallW = recall_score(math_module.oneHot_to_1D(y_test), y_pred, average='weighted')
+precisionW = precision_score(math_module.oneHot_to_1D(y_test), y_pred, average='weighted')
+f_scoreW = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=y_pred, average='weighted')
+
+recall = recall_score(math_module.oneHot_to_1D(y_test), y_pred, average=None)
+precision = precision_score(math_module.oneHot_to_1D(y_test), y_pred, average=None)
+f_score = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=y_pred, average=None)
+
+print("Recall score:\t\t "+ str(recall) + "\tweighted average:\t" + str(recallW))
+print("Precision score:\t "+ str(precision) + "\tweighted average:\t" + str(precisionW))
+print("F1 score:\t\t "+ str(f_score) + "\tweighted average:\t" + str(f_scoreW))
+
+
 math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
 
 
 
 
 
-
+'''
 #########################################				Live webcam testing
 num_rep = 3
 
@@ -361,7 +455,7 @@ mixer.music.play()
 while pygame.mixer.music.get_busy():
 	pygame.time.Clock().tick(10)
 
-
+'''
 
 '''
 0-->0-52 braccia piegate

@@ -21,8 +21,8 @@ if args.optimal:
 	print("Looking for optimal solution...")
 	stream = os.popen("clingo "+ problem_instance + " " + problem_encoding + " --quiet=1")
 else:
-	print("Looking for a solution in 30 seconds...")
-	stream = os.popen("clingo "+ problem_instance + " " + problem_encoding + " --time-limit=30 --quiet=1")
+	print("Looking for a solution in 5 minutes...")
+	stream = os.popen("clingo "+ problem_instance + " " + problem_encoding + " --time-limit=300 --quiet=1")
 
 print("Running and solving... (it might take some time)")
 output_string = stream.read()
