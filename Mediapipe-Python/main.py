@@ -245,7 +245,7 @@ y_pred_SVM = svm_module.train_and_score(X_train, X_test, y_train, y_test)
 
 math_module.confusionMatrix(y_test, y_pred_SVM, actions)
 
-# print("Best HP training: ")
+print("Best HP training: ")
 # Final cross val score: 0.9923076923076923, sd: 0.015385
 # study=svm_module.findBestHyperparameters(X_train, y_train)
 # model=svm_module.train(X_train, y_train,study.best_params)
@@ -279,6 +279,12 @@ print("Precision score:\t "+ str(precision) + "\tweighted average:\t" + str(prec
 print("F1 score:\t\t "+ str(f_score) + "\tweighted average:\t" + str(f_scoreW))
 
 math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(y_pred), actions)
+
+
+
+
+svm_module.nestedCV(X_train, y_train)
+
 
 
 

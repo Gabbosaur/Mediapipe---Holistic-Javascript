@@ -1,9 +1,12 @@
+import numpy as np
 from sklearn import svm
 import sklearn.metrics as metrics
+from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.model_selection import cross_val_score
 import math_module as mm
 import pickle
 import optuna
+
 
 def train_and_score(X_train, X_test, y_train, y_test):
     
@@ -68,3 +71,31 @@ def findBestHyperparameters(X_train, y_train):
 	print(study.best_params) # Printa i migliori parametri
 	print(1.0 - study.best_value) # Printa l'accuracy
 	return study
+
+
+def nestedCV(X_train, y_train):
+
+	NUM_TRIALS = 150
+	p_grid = {"kernel" : ['rbf','poly','linear','sigmoid'],"C": [1, 10, 100], "gamma": [0.01, 0.1], 'degree':[1,3]}
+	nested_scores = np.zeros(NUM_TRIALS)
+	# Loop for each trial
+	nested_clf = []
+	for i in range(NUM_TRIALS):
+
+		# Choose cross-validation techniques for the inner and outer loops,
+		# independently of the dataset.
+		# E.g "GroupKFold", "LeaveOneOut", "LeaveOneGroupOut", etc.
+		inner_cv = KFold(n_splits=5, shuffle=True, random_state=i)
+		outer_cv = KFold(n_splits=5, shuffle=True, random_state=i)
+
+		# Nested CV with parameter optimization
+		clf = GridSearchCV(estimator=svm, param_grid=p_grid, cv=inner_cv)
+		y_1D = mm.oneHot_to_1D(y_train)
+		nested_score = cross_val_score(clf, X=X_train, y=y_1D, cv=outer_cv)
+		nested_scores[i] = nested_score.mean()
+
+		nested_clf[i] = clf
+
+	print("nested scores: ")
+	print(nested_scores)
+	print(nested_clf)
