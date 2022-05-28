@@ -3,17 +3,18 @@ from matplotlib import pyplot as plt
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV, cross_val_score, KFold
 import numpy as np
+import math_module
+
+
 
 # Number of random trials
 NUM_TRIALS = 30
 
 # Load the dataset
-iris = load_iris()
-X_iris = iris.data
-y_iris = iris.target
+X_train, X_test, y_train, y_test  = math_module.load_split_model()
 
 # Set up possible values of parameters to optimize over
-p_grid = {"C": [1, 10, 100], "gamma": [0.01, 0.1]}
+p_grid = {"kernel" : ['rbf','poly','linear','sigmoid'],"C": [1, 10, 100], "gamma": [0.01, 0.1], 'degree':[1,3]}
 
 # We will use a Support Vector Classifier with "rbf" kernel
 svm = SVC(kernel="rbf")
@@ -21,61 +22,25 @@ svm = SVC(kernel="rbf")
 # Arrays to store scores
 non_nested_scores = np.zeros(NUM_TRIALS)
 nested_scores = np.zeros(NUM_TRIALS)
-
+list_clf = []
 # Loop for each trial
 for i in range(NUM_TRIALS):
 
-    # Choose cross-validation techniques for the inner and outer loops,
-    # independently of the dataset.
-    # E.g "GroupKFold", "LeaveOneOut", "LeaveOneGroupOut", etc.
-    inner_cv = KFold(n_splits=4, shuffle=True, random_state=i)
-    outer_cv = KFold(n_splits=4, shuffle=True, random_state=i)
+	# Choose cross-validation techniques for the inner and outer loops,
+	# independently of the dataset.
+	# E.g "GroupKFold", "LeaveOneOut", "LeaveOneGroupOut", etc.
+	inner_cv = KFold(n_splits=5, shuffle=True, random_state=i)
+	outer_cv = KFold(n_splits=5, shuffle=True, random_state=i)
 
-    # Non_nested parameter search and scoring
-    clf = GridSearchCV(estimator=svm, param_grid=p_grid, cv=outer_cv)
-    clf.fit(X_iris, y_iris)
-    non_nested_scores[i] = clf.best_score_
+	# Nested CV with parameter optimization
+	clf = GridSearchCV(estimator=svm, param_grid=p_grid, cv=inner_cv)
+	nested_score = cross_val_score(clf, X=X_train, y=math_module.oneHot_to_1D(y_train), cv=outer_cv)
+	nested_scores[i] = nested_score.mean()
+	list_clf.append(clf)
 
-    # Nested CV with parameter optimization
-    clf = GridSearchCV(estimator=svm, param_grid=p_grid, cv=inner_cv)
-    nested_score = cross_val_score(clf, X=X_iris, y=y_iris, cv=outer_cv)
-    nested_scores[i] = nested_score.mean()
+print(nested_scores)
+print(np.max(nested_scores))
+max_nested_score = np.max(nested_scores)
+max_index = nested_scores.index(max_nested_score)
 
-score_difference = non_nested_scores - nested_scores
-
-print(
-    "Average difference of {:6f} with std. dev. of {:6f}.".format(
-        score_difference.mean(), score_difference.std()
-    )
-)
-
-# Plot scores on each trial for nested and non-nested CV
-plt.figure()
-plt.subplot(211)
-(non_nested_scores_line,) = plt.plot(non_nested_scores, color="r")
-(nested_line,) = plt.plot(nested_scores, color="b")
-plt.ylabel("score", fontsize="14")
-plt.legend(
-    [non_nested_scores_line, nested_line],
-    ["Non-Nested CV", "Nested CV"],
-    bbox_to_anchor=(0, 0.4, 0.5, 0),
-)
-plt.title(
-    "Non-Nested and Nested Cross Validation on Iris Dataset",
-    x=0.5,
-    y=1.1,
-    fontsize="15",
-)
-
-# Plot bar chart of the difference.
-plt.subplot(212)
-difference_plot = plt.bar(range(NUM_TRIALS), score_difference)
-plt.xlabel("Individual Trial #")
-plt.legend(
-    [difference_plot],
-    ["Non-Nested CV - Nested CV Score"],
-    bbox_to_anchor=(0, 1, 0.8, 0),
-)
-plt.ylabel("score difference", fontsize="14")
-
-plt.show()
+print(list_clf)
