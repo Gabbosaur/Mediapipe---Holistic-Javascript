@@ -3,7 +3,7 @@ import optuna
 from sklearn import metrics
 from sklearn.datasets import load_iris
 from matplotlib import pyplot as plt
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, make_scorer
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import GridSearchCV, cross_val_score, KFold
 import numpy as np
@@ -22,14 +22,17 @@ def findBestHyperForRMSE(X_train, y_train,cv_inner):
 			subsample=trial.suggest_float("subsample", 0.2, 1.0),
 		)
 		DTC = GradientBoostingClassifier(**dtc_params, random_state=0)
-		cross_score = cross_val_score(DTC, X_train, y_train, cv=cv_inner)
+		
+		#cross_score = cross_val_score(DTC, X_train, y_train, cv=cv_inner,scoring='f1_weighted')
+		cross_score = cross_val_score(DTC, X_train, y_train, cv=cv_inner,scoring=make_scorer(f1_score,average='weighted'))
+		print("f1 weighted per cross val "+str(cross_score.mean()))
 		error = 1.0 - cross_score.mean()
 		return error
 
 
 	# 3. Create a study object and optimize the objective function.
 	study = optuna.create_study() # di default è minimize, quindi di minimizzare l'errore
-	study.optimize(objective, n_trials=150)
+	study.optimize(objective, n_trials=50)
 
 	print(study.best_params) # Printa i migliori parametri
 	print(1.0 - study.best_value) # Printa l'accuracy

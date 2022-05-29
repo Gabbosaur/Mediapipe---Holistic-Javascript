@@ -3,7 +3,7 @@ import optuna
 from sklearn import metrics
 from sklearn.datasets import load_iris
 from matplotlib import pyplot as plt
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, make_scorer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV, cross_val_score, KFold
 import numpy as np
@@ -22,7 +22,8 @@ def findBestHyperForRMSE(X_train, y_train,cv_inner):
 			n_estimators = trial.suggest_int("n_estimators", 100, 1000),
 		)
 		DTC = RandomForestClassifier(**dtc_params, random_state=0)
-		cross_score = cross_val_score(DTC, X_train, y_train, cv=cv_inner)
+		cross_score = cross_val_score(DTC, X_train, y_train, cv=cv_inner,scoring=make_scorer(f1_score,average='weighted'))
+		print("f1 weighted per cross val "+str(cross_score.mean()))
 		error = 1.0 - cross_score.mean()
 		return error
 
