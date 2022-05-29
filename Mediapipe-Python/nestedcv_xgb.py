@@ -13,7 +13,7 @@ def findBestHyperForRMSE(X_train, y_train,cv_inner):
 
 	def objective(trial):
 		dtc_params = dict(
-		     max_depth=trial.suggest_int("max_depth", 2, 10),
+		    max_depth=trial.suggest_int("max_depth", 2, 10),
 			learning_rate=trial.suggest_float("learning_rate", 1e-4, 1e-1, log=True),
 			n_estimators=trial.suggest_int("n_estimators", 100, 2000),
 			min_child_weight=trial.suggest_int("min_child_weight", 1, 10),

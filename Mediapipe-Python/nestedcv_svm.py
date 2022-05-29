@@ -216,7 +216,4 @@ for train_ix, test_ix in cv_outer.split(X_ltrain):
 	list_f1score.append(f_score)
 	# list_accuracy.append(metrics.accuracy_score(yhat, mm.oneHot_to_1D(y_test)))
 	i=i+1
-print('f-1 score: %.3f (%.3f)' % (np.mean(list_f1score), np.std(list_f1score)))
-
-print(list_f1score)
-print(len(list_best_acc))
+print('SVM nested cross validation f-1 score: %.3f with standard deviation: %.3f' % (np.mean(list_f1score), np.std(list_f1score)))
