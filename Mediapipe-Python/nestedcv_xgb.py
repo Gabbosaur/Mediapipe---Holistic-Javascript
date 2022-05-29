@@ -1,7 +1,6 @@
 import optuna
 from matplotlib import pyplot as plt
 from sklearn.metrics import f1_score
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import cross_val_score, KFold
 import numpy as np
 from xgboost import XGBClassifier
@@ -67,8 +66,8 @@ for train_ix, test_ix in cv_outer.split(X_ltrain):
 	list_best_acc.append(best_acc)
 	j=j+1
 
-	model = DecisionTreeClassifier(**best_hyper, random_state=0)
-	model.fit(X_trainval, y_trainval)
+	model = XGBClassifier(**best_hyper, random_state=0)
+	model.fit(X_trainval, mm.oneHot_to_1D(y_trainval))
 
 	yhat = model.predict(X_test)
 
