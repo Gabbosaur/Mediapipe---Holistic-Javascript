@@ -31,8 +31,9 @@ def findBestHyperForRMSE(X_train, y_train,cv_inner):
 	study = optuna.create_study() # di default è minimize, quindi di minimizzare l'errore
 	study.optimize(objective, n_trials=150)
 
+	print()
 	print(study.best_params) # Printa i migliori parametri
-	print(1.0 - study.best_value) # Printa l'accuracy
+	# print(1.0 - study.best_value) # Printa l'accuracy
 	return study
 
 
@@ -72,7 +73,5 @@ for train_ix, test_ix in cv_outer.split(X_ltrain):
 	f_score = f1_score(y_true=y_test, y_pred=yhat, average=None)
 	list_f1score.append(f_score)
 	i=i+1
-print('f-1 score: %.3f (%.3f)' % (np.mean(list_f1score), np.std(list_f1score)))
 
-print(list_f1score)
-print(len(list_best_acc))
+print('\nRF nested cross validation f-1 score: %.3f with standard deviation: %.3f\n' % (np.mean(list_f1score), np.std(list_f1score)))
