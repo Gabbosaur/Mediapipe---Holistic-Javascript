@@ -1,6 +1,6 @@
 import optuna
 from matplotlib import pyplot as plt
-from sklearn.metrics import f1_score
+from sklearn.metrics import f1_score, make_scorer
 from sklearn.model_selection import cross_val_score, KFold
 import numpy as np
 from xgboost import XGBClassifier
@@ -24,7 +24,8 @@ def findBestHyperForRMSE(X_train, y_train,cv_inner):
 			gamma=trial.suggest_float("gamma", 0, 50),
 		)
 		DTC = XGBClassifier(**dtc_params, use_label_encoder=False, eval_metric = 'mlogloss', random_state=0)
-		cross_score = cross_val_score(DTC, X_train, y_train, cv=cv_inner)
+		cross_score = cross_val_score(DTC, X_train, y_train, cv=cv_inner,scoring=make_scorer(f1_score,average='weighted'))
+		print("f1 weighted per cross val "+str(cross_score.mean()))
 		error = 1.0 - cross_score.mean()
 		return error
 
