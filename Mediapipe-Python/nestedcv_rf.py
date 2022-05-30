@@ -81,12 +81,12 @@ for train_ix, test_ix in cv_outer.split(X_ltrain):
 
 	
 	###############################################################
-	recallW = recall_score(math_module.oneHot_to_1D(y_test), yhat, average='weighted')
-	precisionW = precision_score(math_module.oneHot_to_1D(y_test), yhat, average='weighted')
-	f_scoreW = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=yhat, average='weighted')
+	recallW = recall_score(y_test, yhat, average='weighted')
+	precisionW = precision_score(y_test, yhat, average='weighted')
+	f_scoreW = f1_score(y_true=y_test, y_pred=yhat, average='weighted')
 
-	recall = recall_score(math_module.oneHot_to_1D(y_test), yhat, average=None)
-	precision = precision_score(math_module.oneHot_to_1D(y_test), yhat, average=None)
+	recall = recall_score(y_test, yhat, average=None)
+	precision = precision_score(y_test, yhat, average=None)
 	
 	f_score = f1_score(y_true=y_test, y_pred=yhat, average=None)
 	list_f1score.append(f_score)
