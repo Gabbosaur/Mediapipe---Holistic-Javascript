@@ -106,7 +106,7 @@ for train_ix, test_ix in cv_outer.split(X_ltrain):
 	recall = recall_score(math_module.oneHot_to_1D(y_test), yhat, average=None)
 	precision = precision_score(math_module.oneHot_to_1D(y_test), yhat, average=None)
 	
-	f_score = f1_score(y_true=y_test, y_pred=yhat, average=None)
+	f_score = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=yhat, average=None)
 	list_f1score.append(f_score)
 	print("\n-------- SVM --------\n")
 	print("Recall score:\t\t "+ str(recall) + "\tweighted average:\t" + str(recallW))
