@@ -10,6 +10,8 @@ import numpy as np
 import math_module
 import math_module as mm
 import annotateData_module
+import warnings
+warnings.filterwarnings('ignore')
 
 sequences, labels, actions = annotateData_module.readAnnotation("alzateLaterali")
 
@@ -101,5 +103,5 @@ for train_ix, test_ix in cv_outer.split(X_ltrain):
 	i=i+1
 print('\nGB nested cross validation f-1 score: %.3f with standard deviation: %.3f\n' % (np.mean(list_f1score), np.std(list_f1score)))
 
-print(list_f1score)
-print(len(list_best_acc))
+# print(list_f1score)
+# print(len(list_best_acc))

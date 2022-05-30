@@ -8,6 +8,9 @@ from xgboost import XGBClassifier
 import math_module
 import annotateData_module
 
+import warnings
+warnings.filterwarnings('ignore')
+
 sequences, labels, actions = annotateData_module.readAnnotation("alzateLaterali")
 
 def findBestHyperForRMSE(X_train, y_train,cv_inner):
@@ -26,7 +29,8 @@ def findBestHyperForRMSE(X_train, y_train,cv_inner):
 			reg_lambda=trial.suggest_float("reg_lambda", 1e-4, 1e2, log=True),
 			gamma=trial.suggest_float("gamma", 0, 50),
 		)
-		DTC = XGBClassifier(**dtc_params, use_label_encoder=False, eval_metric = 'mlogloss', random_state=0)
+		#eval_metric = 'mlogloss',
+		DTC = XGBClassifier(**dtc_params, use_label_encoder=False,  random_state=0,disable_default_eval_metric=True)
 		cross_score = cross_val_score(DTC, X_train, y_train, cv=cv_inner,scoring=make_scorer(f1_score,average='weighted'))
 		print("f1 weighted per cross val "+str(cross_score.mean()))
 		error = 1.0 - cross_score.mean()
@@ -72,7 +76,7 @@ for train_ix, test_ix in cv_outer.split(X_ltrain):
 	list_best_acc.append(best_acc)
 	j=j+1
 
-	model = XGBClassifier(**best_hyper, random_state=0)
+	model = XGBClassifier(**best_hyper,use_label_encoder=False, random_state=0,disable_default_eval_metric=True)
 	model.fit(X_trainval, math_module.oneHot_to_1D(y_trainval))
 
 	yhat = model.predict(X_test)
@@ -96,5 +100,5 @@ for train_ix, test_ix in cv_outer.split(X_ltrain):
 print('\nXGB nested cross validation f-1 score: %.3f with standard deviation: %.3f\n' % (np.mean(list_f1score), np.std(list_f1score)))
 
 
-print(list_f1score)
-print(len(list_best_acc))
+# print(list_f1score)
+# print(len(list_best_acc))
