@@ -93,7 +93,8 @@ for train_ix, test_ix in cv_outer.split(X_ltrain):
 
 	math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(yhat), actions)
 	i=i+1
-print('f-1 score: %.3f (%.3f)' % (np.mean(list_f1score), np.std(list_f1score)))
+print('\nXGB nested cross validation f-1 score: %.3f with standard deviation: %.3f\n' % (np.mean(list_f1score), np.std(list_f1score)))
+
 
 print(list_f1score)
 print(len(list_best_acc))
