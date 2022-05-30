@@ -3,12 +3,16 @@ import optuna
 from sklearn import metrics
 from sklearn.datasets import load_iris
 from matplotlib import pyplot as plt
-from sklearn.metrics import accuracy_score, f1_score, make_scorer
+from sklearn.metrics import accuracy_score, f1_score, make_scorer, precision_score, recall_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV, cross_val_score, KFold
 import numpy as np
 import math_module
 import math_module as mm
+#############################################à
+import annotateData_module
+
+sequences, labels, actions = annotateData_module.readAnnotation("alzateLaterali")
 
 def findBestHyperForRMSE(X_train, y_train,cv_inner):
 
@@ -42,6 +46,10 @@ def findBestHyperForRMSE(X_train, y_train,cv_inner):
 X_ltrain, X_ltest, y_ltrain, y_ltest  = math_module.load_split_model()
 
 
+################################################
+X_ltrain = np.concatenate((X_ltrain, X_ltest))
+y_ltrain = np.concatenate((y_ltrain, y_ltest))
+
 cv_outer = KFold(n_splits=5, shuffle=True, random_state=1)
 # enumerate splits
 list_f1score=list()
@@ -71,8 +79,25 @@ for train_ix, test_ix in cv_outer.split(X_ltrain):
 
 	yhat = model.predict(X_test)
 
+	
+	###############################################################
+	recallW = recall_score(math_module.oneHot_to_1D(y_test), yhat, average='weighted')
+	precisionW = precision_score(math_module.oneHot_to_1D(y_test), yhat, average='weighted')
+	f_scoreW = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=yhat, average='weighted')
+
+	recall = recall_score(math_module.oneHot_to_1D(y_test), yhat, average=None)
+	precision = precision_score(math_module.oneHot_to_1D(y_test), yhat, average=None)
+	
 	f_score = f1_score(y_true=y_test, y_pred=yhat, average=None)
 	list_f1score.append(f_score)
+	print("\n-------- RANDOM FOREST --------\n")
+	print("Recall score:\t\t "+ str(recall) + "\tweighted average:\t" + str(recallW))
+	print("Precision score:\t "+ str(precision) + "\tweighted average:\t" + str(precisionW))
+	print("F1 score:\t\t "+ str(f_score) + "\tweighted average:\t" + str(f_scoreW))
+
+	math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(yhat), actions)
+
+
 	i=i+1
 
 print('\nRF nested cross validation f-1 score: %.3f with standard deviation: %.3f\n' % (np.mean(list_f1score), np.std(list_f1score)))

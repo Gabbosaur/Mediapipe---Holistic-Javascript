@@ -1,15 +1,18 @@
 import optuna
 from matplotlib import pyplot as plt
-from sklearn.metrics import f1_score, make_scorer
+from sklearn.metrics import f1_score, make_scorer, precision_score, recall_score
 from sklearn.model_selection import cross_val_score, KFold
 import numpy as np
 from xgboost import XGBClassifier
 
-import math_module as mm
+import math_module
+import annotateData_module
+
+sequences, labels, actions = annotateData_module.readAnnotation("alzateLaterali")
 
 def findBestHyperForRMSE(X_train, y_train,cv_inner):
 
-	y_train = mm.oneHot_to_1D(y_train)
+	y_train = math_module.oneHot_to_1D(y_train)
 
 	def objective(trial):
 		dtc_params = dict(
@@ -40,8 +43,10 @@ def findBestHyperForRMSE(X_train, y_train,cv_inner):
 
 
 # Load the dataset
-X_ltrain, X_ltest, y_ltrain, y_ltest  = mm.load_split_model()
+X_ltrain, X_ltest, y_ltrain, y_ltest  = math_module.load_split_model()
 
+X_ltrain = np.concatenate((X_ltrain, X_ltest))
+y_ltrain = np.concatenate((y_ltrain, y_ltest))
 
 cv_outer = KFold(n_splits=5, shuffle=True, random_state=1)
 # enumerate splits
@@ -68,12 +73,25 @@ for train_ix, test_ix in cv_outer.split(X_ltrain):
 	j=j+1
 
 	model = XGBClassifier(**best_hyper, random_state=0)
-	model.fit(X_trainval, mm.oneHot_to_1D(y_trainval))
+	model.fit(X_trainval, math_module.oneHot_to_1D(y_trainval))
 
 	yhat = model.predict(X_test)
 
-	f_score = f1_score(y_true=mm.oneHot_to_1D(y_test), y_pred=yhat, average=None)
+	recallW = recall_score(math_module.oneHot_to_1D(y_test), yhat, average='weighted')
+	precisionW = precision_score(math_module.oneHot_to_1D(y_test), yhat, average='weighted')
+	f_scoreW = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=yhat, average='weighted')
+
+	recall = recall_score(math_module.oneHot_to_1D(y_test), yhat, average=None)
+	precision = precision_score(math_module.oneHot_to_1D(y_test), yhat, average=None)
+	
+	f_score = f1_score(y_true=y_test, y_pred=yhat, average=None)
 	list_f1score.append(f_score)
+	print("\n-------- EXTREME GRADIENT BOOSTING --------\n")
+	print("Recall score:\t\t "+ str(recall) + "\tweighted average:\t" + str(recallW))
+	print("Precision score:\t "+ str(precision) + "\tweighted average:\t" + str(precisionW))
+	print("F1 score:\t\t "+ str(f_score) + "\tweighted average:\t" + str(f_scoreW))
+
+	math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(yhat), actions)
 	i=i+1
 print('f-1 score: %.3f (%.3f)' % (np.mean(list_f1score), np.std(list_f1score)))
 

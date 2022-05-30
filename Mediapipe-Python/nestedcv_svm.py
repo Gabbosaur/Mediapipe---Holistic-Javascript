@@ -4,16 +4,18 @@ from sklearn import svm
 from sklearn import metrics
 from sklearn.datasets import load_iris
 from matplotlib import pyplot as plt
-from sklearn.metrics import accuracy_score, f1_score, make_scorer
+from sklearn.metrics import accuracy_score, f1_score, make_scorer, precision_score, recall_score
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV, cross_val_score, KFold
 import numpy as np
 import math_module
-import math_module as mm
+import annotateData_module
+
+sequences, labels, actions = annotateData_module.readAnnotation("alzateLaterali")
 
 def findBestHyperForRMSE(X_train, y_train,cv_inner):
 
-	y_train = mm.oneHot_to_1D(y_train)
+	y_train = math_module.oneHot_to_1D(y_train)
 
 	def objective(trial):
 		dtc_params = dict(
@@ -43,129 +45,14 @@ def findBestHyperForRMSE(X_train, y_train,cv_inner):
 	return study
 
 
-# Number of random trials
-NUM_TRIALS = 30
-
 # Load the dataset
 X_ltrain, X_ltest, y_ltrain, y_ltest  = math_module.load_split_model()
 
-# zero=0
-# uno=0
-# due=0
-# tre=0
-# for x in mm.oneHot_to_1D(y_ltrain):
-# 	if x==0:
-# 		zero=zero+1
-# 	elif x==1:
-# 		uno=uno+1
-# 	elif x==2:
-# 		due=due+1
-# 	elif x==3:
-# 		tre=tre+1
-
-# print("classi in ltrain: zero="+str(zero)+" uno="+str(uno)+" due="+str(due)+" tre="+str(tre))
-# zero=0
-# uno=0
-# due=0
-# tre=0
-# for x in mm.oneHot_to_1D(y_ltest):
-# 	if x==0:
-# 		zero=zero+1
-# 	elif x==1:
-# 		uno=uno+1
-# 	elif x==2:
-# 		due=due+1
-# 	elif x==3:
-# 		tre=tre+1
-# print("classi in ltest: zero="+str(zero)+" uno="+str(uno)+" due="+str(due)+" tre="+str(tre))
+X_ltrain = np.concatenate((X_ltrain, X_ltest))
+y_ltrain = np.concatenate((y_ltrain, y_ltest))
 
 
-# exit()
-# Set up possible values of parameters to optimize over
-p_grid = {"kernel" : ['rbf','poly','linear','sigmoid'],"C": [1, 10, 100], "gamma": [0.01, 0.1], 'degree':[1,3]}
-
-# We will use a Support Vector Classifier with "rbf" kernel
-#svm = SVC(kernel="rbf")
-
-# Arrays to store scores
-non_nested_scores = np.zeros(NUM_TRIALS)
-nested_scores = np.zeros(NUM_TRIALS)
 list_clf = []
-# # Loop for each trial
-# for i in range(NUM_TRIALS):
-
-# 	# Choose cross-validation techniques for the inner and outer loops,
-# 	# independently of the dataset.
-# 	# E.g "GroupKFold", "LeaveOneOut", "LeaveOneGroupOut", etc.
-# 	inner_cv = KFold(n_splits=5, shuffle=True, random_state=i)
-# 	outer_cv = KFold(n_splits=5, shuffle=True, random_state=i)
-
-# 	# Nested CV with parameter optimization
-# 	clf = GridSearchCV(estimator=svm, param_grid=p_grid, cv=inner_cv)
-# 	nested_score = cross_val_score(clf, X=X_train, y=math_module.oneHot_to_1D(y_train), cv=outer_cv)
-# 	nested_scores[i] = nested_score.mean()
-# 	list_clf.append(clf)
-
-# print(nested_scores)
-# print(np.max(nested_scores))
-# max_nested_score = np.max(nested_scores)
-# max_index = nested_scores.index(max_nested_score)
-
-# print(list_clf)
-
-###################################################################################################################
-# cv_outer = KFold(n_splits=5, shuffle=True, random_state=1)
-# # enumerate splits
-# list_accuracy=list()
-# list_study=list()
-# list_best_acc=list()
-# outer_results = list()
-# i=0
-# j=0
-# svm_model = SVC(kernel="rbf")
-
-# for train_ix, test_ix in cv_outer.split(X_ltrain):
-	
-# 	X_trainval, X_test = X_ltrain[train_ix, :], X_ltrain[test_ix, :]
-# 	y_trainval, y_test = y_ltrain[train_ix], y_ltrain[test_ix]
-
-# 	cv_inner = KFold(n_splits=5, shuffle=True, random_state=1)
-	
-# 	for train_ix2, val_ix2 in cv_inner.split(X_trainval):
-# 		X_val, X_train = X_ltrain[train_ix2, :], X_ltrain[val_ix2, :]
-# 		y_val, y_train = y_ltrain[train_ix2], y_ltrain[val_ix2]
-
-# 		#y_train = mm.oneHot_to_1D(y_train)
-
-# 		# print(X_train)
-# 		# print("---------")
-# 		# print(y_train)
-# 		study=findBestHyperForRMSE(X_train, y_train,X_val,y_val)
-
-# 		best_acc=1.0 - study.best_value
-# 		best_hyper=study.best_params
-# 		list_study.append(study)
-# 		list_best_acc.append(best_acc)
-# 		j=j+1
-
-# 	max_mean=max(list_best_acc[j-5:j])
-# 	index=list_best_acc.index(max_mean)
-# 	bestHyperParam=list_study[index].best_params
-
-# 	model = svm.SVC(**bestHyperParam, random_state=0)
-# 	model.fit(X_trainval, mm.oneHot_to_1D(y_trainval))
-
-# 	yhat = model.predict(X_test)
-
-# 	f_score = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=yhat, average=None)
-# 	list_accuracy.append(f_score)
-# 	# list_accuracy.append(metrics.accuracy_score(yhat, mm.oneHot_to_1D(y_test)))
-# 	i=i+1
-# print('f-1 score: %.3f (%.3f)' % (np.mean(list_accuracy), np.std(list_accuracy)))
-
-# print(list_accuracy)
-# print(len(list_best_acc))
-
 
 
 cv_outer = KFold(n_splits=5, shuffle=True, random_state=1)
@@ -208,12 +95,24 @@ for train_ix, test_ix in cv_outer.split(X_ltrain):
 	#bestHyperParam=list_study[index].best_params
 
 	model = svm.SVC(**best_hyper, random_state=0)
-	model.fit(X_trainval, mm.oneHot_to_1D(y_trainval))
+	model.fit(X_trainval, math_module.oneHot_to_1D(y_trainval))
 
 	yhat = model.predict(X_test)
 
-	f_score = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=yhat, average=None)
+	recallW = recall_score(math_module.oneHot_to_1D(y_test), yhat, average='weighted')
+	precisionW = precision_score(math_module.oneHot_to_1D(y_test), yhat, average='weighted')
+	f_scoreW = f1_score(y_true=math_module.oneHot_to_1D(y_test), y_pred=yhat, average='weighted')
+
+	recall = recall_score(math_module.oneHot_to_1D(y_test), yhat, average=None)
+	precision = precision_score(math_module.oneHot_to_1D(y_test), yhat, average=None)
+	
+	f_score = f1_score(y_true=y_test, y_pred=yhat, average=None)
 	list_f1score.append(f_score)
-	# list_accuracy.append(metrics.accuracy_score(yhat, mm.oneHot_to_1D(y_test)))
+	print("\n-------- SVM --------\n")
+	print("Recall score:\t\t "+ str(recall) + "\tweighted average:\t" + str(recallW))
+	print("Precision score:\t "+ str(precision) + "\tweighted average:\t" + str(precisionW))
+	print("F1 score:\t\t "+ str(f_score) + "\tweighted average:\t" + str(f_scoreW))
+
+	math_module.confusionMatrix(y_test, math_module.oneD_to_oneHot(yhat), actions)
 	i=i+1
 print('SVM nested cross validation f-1 score: %.3f with standard deviation: %.3f' % (np.mean(list_f1score), np.std(list_f1score)))
